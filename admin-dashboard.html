@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | QUIZCORE</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top right,
+                rgba(0, 246, 255, 0.12),
+                transparent 30%),
+                #030606;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        /* =========================
+           DASHBOARD
+        ========================== */
+
+        .dashboard {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================== */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+
+            background: #050909;
+            border-right: 1px solid #00f6ff;
+
+            box-shadow:
+                0 0 20px rgba(0, 246, 255, 0.15);
+
+            padding: 25px 15px;
+            z-index: 100;
+        }
+
+        .logo {
+            text-align: center;
+            color: #00f6ff;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 4px;
+
+            text-shadow:
+                0 0 10px #00f6ff;
+
+            margin-bottom: 40px;
+        }
+
+        .admin-label {
+            text-align: center;
+            color: #777;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #aaa;
+
+            padding: 13px 15px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+
+            transition: 0.3s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            color: #00f6ff;
+            border-color: #00f6ff;
+            background: rgba(0, 246, 255, 0.06);
+
+            box-shadow:
+                0 0 12px rgba(0, 246, 255, 0.2);
+        }
+
+        .logout {
+            margin-top: 40px;
+            width: 100%;
+            padding: 12px;
+
+            background: transparent;
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .logout:hover {
+            background: #ff4d4d;
+            color: #000;
+            box-shadow: 0 0 15px #ff4d4d;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================== */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+
+            border-bottom: 1px solid #1c2929;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            color: #00f6ff;
+            font-size: 28px;
+
+            text-shadow:
+                0 0 10px rgba(0, 246, 255, 0.5);
+        }
+
+        .topbar p {
+            margin: 5px 0 0;
+            color: #777;
+        }
+
+        .admin-name {
+            padding: 10px 16px;
+            border: 1px solid #00f6ff;
+            color: #00f6ff;
+            border-radius: 7px;
+        }
+
+        /* =========================
+           STAT CARDS
+        ========================== */
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #080d0d;
+            border: 1px solid #172525;
+            border-radius: 12px;
+
+            padding: 22px;
+
+            position: relative;
+            overflow: hidden;
+
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #00f6ff;
+
+            box-shadow:
+                0 0 18px rgba(0, 246, 255, 0.2);
+
+            transform: translateY(-3px);
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .stat-card .number {
+            margin-top: 12px;
+            color: #00f6ff;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card .icon {
+            position: absolute;
+            right: 20px;
+            top: 22px;
+
+            font-size: 30px;
+            opacity: 0.7;
+        }
+
+        /* =========================
+           QUICK ACTIONS
+        ========================== */
+
+        .section-title {
+            color: #fff;
+            margin: 0 0 15px;
+            font-size: 20px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action {
+            padding: 18px;
+
+            background: #080d0d;
+            border: 1px solid #00f6ff;
+            border-radius: 10px;
+
+            color: #00f6ff;
+            text-decoration: none;
+            text-align: center;
+
+            transition: 0.3s;
+        }
+
+        .action:hover {
+            background: #00f6ff;
+            color: #000;
+
+            box-shadow:
+                0 0 18px #00f6ff;
+        }
+
+        .action span {
+            display: block;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        /* =========================
+           RECENT RESULTS
+        ========================== */
+
+        .table-container {
+            background: #080d0d;
+            border: 1px solid #172525;
+            border-radius: 12px;
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th {
+            background: #0c1717;
+            color: #00f6ff;
+            padding: 15px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 14px 15px;
+            border-top: 1px solid #172020;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        tr:hover td {
+            background: rgba(0, 246, 255, 0.03);
+        }
+
+        .pass {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .fail {
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+
+        .rank {
+            color: #00f6ff;
+            font-weight: bold;
+        }
+
+        /* =========================
+           SYSTEM STATUS
+        ========================== */
+
+        .system-status {
+            margin-top: 30px;
+
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .status-card {
+            background: #080d0d;
+            border: 1px solid #172525;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .status-card h3 {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .online {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 1000px) {
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .quick-actions {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .system-status {
+                grid-template-columns:
+                    1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+
+                border-right: none;
+                border-bottom: 1px solid #00f6ff;
+            }
+
+            .dashboard {
+                display: block;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 15px;
+            }
+
+            .menu {
+                display: grid;
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .logout {
+                margin-top: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            QUIZCORE
+        </div>
+
+        <div class="admin-label">
+            ADMIN PANEL
+        </div>
+
+        <nav class="menu">
+
+            <a href="admin-dashboard.html" class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="admin-students.html">
+                👨‍🎓 Students
+            </a>
+
+            <a href="admin-quizzes.html">
+                📝 Quizzes
+            </a>
+
+            <a href="admin-questions.html">
+                ❓ Questions
+            </a>
+
+            <a href="admin-results.html">
+                📊 Results
+            </a>
+
+            <a href="admin-schedule.html">
+                📅 Schedule
+            </a>
+
+        </nav>
+
+        <button class="logout" onclick="logout()">
+            LOGOUT
+        </button>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div>
+                <h1>ADMIN DASHBOARD</h1>
+
+                <p>
+                    Manage your Online Quiz System
+                </p>
+            </div>
+
+            <div class="admin-name">
+                👤 ADMIN
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             STATISTICS
+        ========================== -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <h3>TOTAL STUDENTS</h3>
+
+                <div class="number" id="totalStudents">
+                    0
+                </div>
+
+                <div class="icon">
+                    👨‍🎓
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>TOTAL QUIZZES</h3>
+
+                <div class="number" id="totalQuizzes">
+                    0
+                </div>
+
+                <div class="icon">
+                    📝
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>ATTENDED</h3>
+
+                <div class="number" id="attended">
+                    0
+                </div>
+
+                <div class="icon">
+                    🎯
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>NOT ATTENDED</h3>
+
+                <div class="number" id="notAttended">
+                    0
+                </div>
+
+                <div class="icon">
+                    ⏳
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>PASSED</h3>
+
+                <div class="number" id="passed">
+                    0
+                </div>
+
+                <div class="icon">
+                    ✅
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>FAILED</h3>
+
+                <div class="number" id="failed">
+                    0
+                </div>
+
+                <div class="icon">
+                    ❌
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             QUICK ACTIONS
+        ========================== -->
+
+        <h2 class="section-title">
+            QUICK ACTIONS
+        </h2>
+
+        <div class="quick-actions">
+
+            <a
+                href="admin-students.html"
+                class="action">
+
+                <span>👨‍🎓</span>
+
+                Manage Students
+
+            </a>
+
+
+            <a
+                href="admin-quizzes.html"
+                class="action">
+
+                <span>📝</span>
+
+                Create Quiz
+
+            </a>
+
+
+            <a
+                href="admin-questions.html"
+                class="action">
+
+                <span>❓</span>
+
+                Add Questions
+
+            </a>
+
+
+            <a
+                href="admin-schedule.html"
+                class="action">
+
+                <span>📅</span>
+
+                Schedule Quiz
+
+            </a>
+
+        </div>
+
+
+        <!-- =========================
+             RECENT RESULTS
+        ========================== -->
+
+        <h2 class="section-title">
+            RECENT RESULTS
+        </h2>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Student</th>
+                        <th>Quiz</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Rank</th>
+                        <th>Status</th>
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="resultsTable">
+
+                    <tr>
+
+                        <td colspan="7"
+                            style="
+                            text-align:center;
+                            color:#666;
+                            padding:30px;">
+
+                            No quiz results available
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =========================
+             SYSTEM STATUS
+        ========================== -->
+
+        <div class="system-status">
+
+            <div class="status-card">
+
+                <h3>SYSTEM STATUS</h3>
+
+                <span class="online">
+                    ● ONLINE
+                </span>
+
+            </div>
+
+
+            <div class="status-card">
+
+                <h3>DATABASE</h3>
+
+                <span class="online">
+                    ● CONNECTED
+                </span>
+
+            </div>
+
+
+            <div class="status-card">
+
+                <h3>QUIZ SYSTEM</h3>
+
+                <span class="online">
+                    ● ACTIVE
+                </span>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       ADMIN LOGIN CHECK
+    ========================== */
+
+    const adminLoggedIn =
+        localStorage.getItem("adminLoggedIn");
+
+    if (adminLoggedIn !== "true") {
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+
+    /* =========================
+       DASHBOARD DATA
+    ========================== */
+
+    function loadDashboard() {
+
+        /*
+         Temporary frontend data.
+
+         Later this data will come
+         from Node.js + MySQL.
+        */
+
+        const students =
+            JSON.parse(
+                localStorage.getItem("students") || "[]"
+            );
+
+        const results =
+            JSON.parse(
+                localStorage.getItem("allResults") || "[]"
+            );
+
+        const quizzes =
+            JSON.parse(
+                localStorage.getItem("quizzes") || "[]"
+            );
+
+
+        /* Total Students */
+
+        document.getElementById(
+            "totalStudents"
+        ).textContent =
+            students.length;
+
+
+        /* Total Quizzes */
+
+        document.getElementById(
+            "totalQuizzes"
+        ).textContent =
+            quizzes.length;
+
+
+        /* Attended */
+
+        document.getElementById(
+            "attended"
+        ).textContent =
+            results.length;
+
+
+        /* Not Attended */
+
+        const notAttended =
+            Math.max(
+                students.length - results.length,
+                0
+            );
+
+        document.getElementById(
+            "notAttended"
+        ).textContent =
+            notAttended;
+
+
+        /* Passed */
+
+        const passed =
+            results.filter(function (result) {
+
+                return Number(result.percentage) >= 40;
+
+            }).length;
+
+
+        document.getElementById(
+            "passed"
+        ).textContent =
+            passed;
+
+
+        /* Failed */
+
+        const failed =
+            results.filter(function (result) {
+
+                return Number(result.percentage) < 40;
+
+            }).length;
+
+
+        document.getElementById(
+            "failed"
+        ).textContent =
+            failed;
+
+
+        /* Recent Results */
+
+        loadResults(results);
+
+    }
+
+
+    /* =========================
+       RESULTS TABLE
+    ========================== */
+
+    function loadResults(results) {
+
+        const table =
+            document.getElementById(
+                "resultsTable"
+            );
+
+
+        if (results.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7"
+                        style="
+                        text-align:center;
+                        color:#666;
+                        padding:30px;">
+
+                        No quiz results available
+
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        table.innerHTML = "";
+
+
+        results
+            .slice()
+            .reverse()
+            .slice(0, 10)
+            .forEach(function (result) {
+
+                const percentage =
+                    Number(result.percentage || 0);
+
+
+                const status =
+                    percentage >= 40
+                        ? "PASS"
+                        : "FAIL";
+
+
+                const statusClass =
+                    percentage >= 40
+                        ? "pass"
+                        : "fail";
+
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${result.studentName || "Student"}
+                    </td>
+
+                    <td>
+                        ${result.quizName || "Quiz"}
+                    </td>
+
+                    <td>
+                        ${result.score || 0}
+                    </td>
+
+                    <td>
+                        ${percentage.toFixed(2)}%
+                    </td>
+
+                    <td class="rank">
+                        ${result.rank || "--"}
+                    </td>
+
+                    <td class="${statusClass}">
+                        ${status}
+                    </td>
+
+                    <td>
+                        ${result.date || "--"}
+                    </td>
+
+                `;
+
+
+                table.appendChild(row);
+
+            });
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================== */
+
+    function logout() {
+
+        localStorage.removeItem(
+            "adminLoggedIn"
+        );
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+
+    /* =========================
+       LOAD DASHBOARD
+    ========================== */
+
+    loadDashboard();
+
+</script>
+
+</body>
+</html>

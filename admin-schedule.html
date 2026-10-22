@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quiz Schedule | QUIZCORE</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(0,246,255,.12),
+                    transparent 30%
+                ),
+                #030606;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .dashboard {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #050909;
+            border-right: 1px solid #00f6ff;
+            box-shadow: 0 0 20px rgba(0,246,255,.15);
+            padding: 25px 15px;
+            z-index: 100;
+        }
+
+        .logo {
+            text-align: center;
+            color: #00f6ff;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px #00f6ff;
+            margin-bottom: 40px;
+        }
+
+        .admin-label {
+            text-align: center;
+            color: #777;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #aaa;
+            padding: 13px 15px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            transition: .3s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            color: #00f6ff;
+            border-color: #00f6ff;
+            background: rgba(0,246,255,.06);
+            box-shadow: 0 0 12px rgba(0,246,255,.2);
+        }
+
+        .logout {
+            margin-top: 40px;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout:hover {
+            background: #ff4d4d;
+            color: #000;
+            box-shadow: 0 0 15px #ff4d4d;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #172525;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            color: #00f6ff;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(0,246,255,.5);
+        }
+
+        .topbar p {
+            margin: 6px 0 0;
+            color: #777;
+        }
+
+        .admin-name {
+            padding: 10px 16px;
+            border: 1px solid #00f6ff;
+            color: #00f6ff;
+            border-radius: 7px;
+        }
+
+        /* TOOLBAR */
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search {
+            flex: 1;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 13px 15px;
+            background: #080d0d;
+            border: 1px solid #263333;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        .search input:focus {
+            border-color: #00f6ff;
+            box-shadow: 0 0 10px rgba(0,246,255,.15);
+        }
+
+        .add-btn {
+            padding: 13px 20px;
+            border: 1px solid #00f6ff;
+            background: transparent;
+            color: #00f6ff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            background: #00f6ff;
+            color: #000;
+            box-shadow: 0 0 15px #00f6ff;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            overflow-x: auto;
+            background: #080d0d;
+            border: 1px solid #172525;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1100px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0c1717;
+            color: #00f6ff;
+            padding: 15px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 14px 15px;
+            border-top: 1px solid #172020;
+            color: #ccc;
+            font-size: 13px;
+        }
+
+        tr:hover td {
+            background: rgba(0,246,255,.03);
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .active {
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            background: rgba(0,255,136,.07);
+        }
+
+        .inactive {
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            background: rgba(255,77,77,.07);
+        }
+
+        .upcoming {
+            color: #ffaa00;
+            border: 1px solid #ffaa00;
+            background: rgba(255,170,0,.07);
+        }
+
+        .expired {
+            color: #888;
+            border: 1px solid #666;
+            background: rgba(100,100,100,.07);
+        }
+
+        /* ACTION */
+
+        .action-btn {
+            padding: 7px 10px;
+            margin-right: 5px;
+            background: transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .edit-btn {
+            border: 1px solid #00f6ff;
+            color: #00f6ff;
+        }
+
+        .edit-btn:hover {
+            background: #00f6ff;
+            color: #000;
+        }
+
+        .delete-btn {
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+        }
+
+        .delete-btn:hover {
+            background: #ff4d4d;
+            color: #000;
+        }
+
+        .toggle-btn {
+            border: 1px solid #ffaa00;
+            color: #ffaa00;
+        }
+
+        .toggle-btn:hover {
+            background: #ffaa00;
+            color: #000;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.85);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 500;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #080d0d;
+            border: 1px solid #00f6ff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0,246,255,.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #00f6ff;
+        }
+
+        .close {
+            background: transparent;
+            border: none;
+            color: #ff4d4d;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #050909;
+            border: 1px solid #263333;
+            border-radius: 7px;
+            color: white;
+            outline: none;
+        }
+
+        /* FIX FOR DATETIME-LOCAL INPUTS IN DARK THEME */
+        input[type="datetime-local"] {
+            color-scheme: dark;
+            cursor: pointer;
+        }
+
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #00f6ff;
+        }
+
+        .date-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            flex: 1;
+            padding: 13px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .save-btn {
+            background: #00f6ff;
+            border: 1px solid #00f6ff;
+            color: #000;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:900px) {
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid #00f6ff;
+            }
+
+            .dashboard {
+                display: block;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 15px;
+            }
+
+            .menu {
+                display: grid;
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .logout {
+                margin-top: 15px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .date-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">QUIZCORE</div>
+        <div class="admin-label">ADMIN PANEL</div>
+        <nav class="menu">
+            <a href="admin-dashboard.html">🏠 Dashboard</a>
+            <a href="admin-students.html">👨‍🎓 Students</a>
+            <a href="admin-quizzes.html">📝 Quizzes</a>
+            <a href="admin-questions.html">❓ Questions</a>
+            <a href="admin-results.html">📊 Results</a>
+            <a href="admin-schedule.html" class="active">📅 Schedule</a>
+        </nav>
+        <button class="logout" onclick="logout()">LOGOUT</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <div class="topbar">
+            <div>
+                <h1>QUIZ SCHEDULE</h1>
+                <p>Schedule and control quiz availability</p>
+            </div>
+            <div class="admin-name">👤 ADMIN</div>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="toolbar">
+            <div class="search">
+                <input type="text" id="searchInput" placeholder="Search quiz..." oninput="displaySchedules()">
+            </div>
+            <button class="add-btn" onclick="openModal()">+ ADD SCHEDULE</button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>QUIZ</th>
+                        <th>SUBJECT</th>
+                        <th>START DATE/TIME</th>
+                        <th>END DATE/TIME</th>
+                        <th>DURATION</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleTable">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="scheduleModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="modalTitle">ADD QUIZ SCHEDULE</h2>
+            <button class="close" onclick="closeModal()">×</button>
+        </div>
+
+        <form id="scheduleForm">
+            <input type="hidden" id="editIndex" value="-1">
+
+            <!-- QUIZ -->
+            <div class="form-group">
+                <label>SELECT QUIZ</label>
+                <select id="quizName" required>
+                    <option value="">Select Quiz</option>
+                </select>
+            </div>
+
+            <!-- START / END -->
+            <div class="date-grid">
+                <div class="form-group">
+                    <label>START DATE & TIME</label>
+                    <input type="datetime-local" id="startDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>END DATE & TIME</label>
+                    <input type="datetime-local" id="endDate" required>
+                </div>
+            </div>
+
+            <!-- DURATION -->
+            <div class="form-group">
+                <label>QUIZ DURATION (MINUTES)</label>
+                <input type="number" id="duration" min="1" placeholder="Example: 30" required>
+            </div>
+
+            <!-- ACTIVE -->
+            <div class="form-group">
+                <label>SCHEDULE STATUS</label>
+                <select id="active" required>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="form-actions">
+                <button type="submit" class="save-btn">SAVE SCHEDULE</button>
+                <button type="button" class="cancel-btn" onclick="closeModal()">CANCEL</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    /* ==================================================
+       ADMIN LOGIN CHECK
+    ================================================== */
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+        window.location.href = "admin-login.html";
+    }
+
+    /* ==================================================
+       DATA
+    ================================================== */
+    let quizzes = JSON.parse(localStorage.getItem("quizzes") || "[]");
+    let schedules = JSON.parse(localStorage.getItem("quizSchedules") || "[]");
+
+    /* ==================================================
+       LOAD QUIZ OPTIONS
+    ================================================== */
+    function loadQuizOptions() {
+        const select = document.getElementById("quizName");
+        select.innerHTML = `<option value="">Select Quiz</option>`;
+
+        quizzes.forEach(function(quiz) {
+            const option = document.createElement("option");
+            option.value = quiz.name;
+            option.textContent = quiz.name;
+            select.appendChild(option);
+        });
+    }
+
+    /* ==================================================
+       OPEN MODAL
+    ================================================== */
+    function openModal() {
+        if (quizzes.length === 0) {
+            alert("First create a quiz from Quiz Management.");
+            return;
+        }
+
+        document.getElementById("scheduleForm").reset();
+        document.getElementById("editIndex").value = "-1";
+        document.getElementById("modalTitle").textContent = "ADD QUIZ SCHEDULE";
+        document.getElementById("active").value = "true";
+        document.getElementById("scheduleModal").style.display = "flex";
+    }
+
+    /* ==================================================
+       CLOSE MODAL
+    ================================================== */
+    function closeModal() {
+        document.getElementById("scheduleModal").style.display = "none";
+    }
+
+    /* ==================================================
+       SAVE SCHEDULE
+    ================================================== */
+    document.getElementById("scheduleForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const quizName = document.getElementById("quizName").value;
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        const duration = Number(document.getElementById("duration").value);
+        const active = document.getElementById("active").value === "true";
+        const editIndex = Number(document.getElementById("editIndex").value);
+
+        /* VALIDATE DATE */
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (end <= start) {
+            alert("End date/time must be after start date/time.");
+            return;
+        }
+
+        if (duration <= 0) {
+            alert("Duration must be greater than 0.");
+            return;
+        }
+
+        /* CHECK DUPLICATE */
+        const duplicate = schedules.some(function(item, index) {
+            return index !== editIndex && item.quizName === quizName;
+        });
+
+        if (duplicate) {
+            alert("This quiz already has a schedule.");
+            return;
+        }
+
+        const schedule = {
+            quizName: quizName,
+            startDate: startDate,
+            endDate: endDate,
+            duration: duration,
+            active: active,
+            createdAt: new Date().toISOString()
+        };
+
+        /* EDIT */
+        if (editIndex >= 0) {
+            schedules[editIndex] = schedule;
+            alert("Schedule updated successfully!");
+        }
+        /* ADD */
+        else {
+            schedules.push(schedule);
+            alert("Schedule created successfully!");
+        }
+
+        localStorage.setItem("quizSchedules", JSON.stringify(schedules));
+
+        /* Update quiz duration if quiz exists */
+        const quiz = quizzes.find(function(item) {
+            return item.name === quizName;
+        });
+
+        if (quiz) {
+            quiz.duration = duration;
+            localStorage.setItem("quizzes", JSON.stringify(quizzes));
+        }
+
+        closeModal();
+        displaySchedules();
+    });
+
+    /* ==================================================
+       GET STATUS
+    ================================================== */
+    function getScheduleStatus(schedule) {
+        const now = new Date();
+        const start = new Date(schedule.startDate);
+        const end = new Date(schedule.endDate);
+
+        if (!schedule.active) {
+            return { text: "INACTIVE", className: "inactive" };
+        }
+        if (now < start) {
+            return { text: "UPCOMING", className: "upcoming" };
+        }
+        if (now >= start && now <= end) {
+            return { text: "ACTIVE", className: "active" };
+        }
+        return { text: "EXPIRED", className: "expired" };
+    }
+
+    /* ==================================================
+       DISPLAY SCHEDULES
+    ================================================== */
+    function displaySchedules() {
+        const table = document.getElementById("scheduleTable");
+        const search = document.getElementById("searchInput").value.toLowerCase().trim();
+
+        table.innerHTML = "";
+
+        const filtered = schedules.filter(function(schedule) {
+            return !search || schedule.quizName.toLowerCase().includes(search);
+        });
+
+        if (filtered.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty">No schedules found.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        filtered.forEach(function(schedule) {
+            const originalIndex = schedules.indexOf(schedule);
+            const status = getScheduleStatus(schedule);
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${originalIndex + 1}</td>
+                <td>${escapeHTML(schedule.quizName)}</td>
+                <td>${escapeHTML(getSubject(schedule.quizName))}</td>
+                <td>${formatDate(schedule.startDate)}</td>
+                <td>${formatDate(schedule.endDate)}</td>
+                <td>${schedule.duration} min</td>
+                <td><span class="status ${status.className}">${status.text}</span></td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="editSchedule(${originalIndex})">EDIT</button>
+                    <button class="action-btn toggle-btn" onclick="toggleSchedule(${originalIndex})">${schedule.active ? "DISABLE" : "ENABLE"}</button>
+                    <button class="action-btn delete-btn" onclick="deleteSchedule(${originalIndex})">DELETE</button>
+                </td>
+            `;
+
+            table.appendChild(row);
+        });
+    }
+
+    /* ==================================================
+       GET SUBJECT
+    ================================================== */
+    function getSubject(quizName) {
+        const quiz = quizzes.find(function(item) {
+            return item.name === quizName;
+        });
+        return quiz ? quiz.subject || "-" : "-";
+    }
+
+    /* ==================================================
+       EDIT SCHEDULE
+    ================================================== */
+    function editSchedule(index) {
+        const schedule = schedules[index];
+        if (!schedule) return;
+
+        document.getElementById("editIndex").value = index;
+        document.getElementById("quizName").value = schedule.quizName;
+        document.getElementById("startDate").value = schedule.startDate;
+        document.getElementById("endDate").value = schedule.endDate;
+        document.getElementById("duration").value = schedule.duration;
+        document.getElementById("active").value = String(schedule.active);
+        document.getElementById("modalTitle").textContent = "EDIT QUIZ SCHEDULE";
+        document.getElementById("scheduleModal").style.display = "flex";
+    }
+
+    /* ==================================================
+       TOGGLE ACTIVE / INACTIVE
+    ================================================== */
+    function toggleSchedule(index) {
+        if (!schedules[index]) return;
+
+        schedules[index].active = !schedules[index].active;
+        localStorage.setItem("quizSchedules", JSON.stringify(schedules));
+        displaySchedules();
+    }
+
+    /* ==================================================
+       DELETE SCHEDULE
+    ================================================== */
+    function deleteSchedule(index) {
+        if (!schedules[index]) return;
+
+        const confirmDelete = confirm("Are you sure you want to delete this schedule?");
+        if (!confirmDelete) return;
+
+        schedules.splice(index, 1);
+        localStorage.setItem("quizSchedules", JSON.stringify(schedules));
+        displaySchedules();
+    }
+
+    /* ==================================================
+       DATE FORMAT
+    ================================================== */
+    function formatDate(value) {
+        if (!value) return "-";
+        const date = new Date(value);
+        if (isNaN(date.getTime())) return value;
+
+        return date.toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    /* ==================================================
+       ESCAPE HTML
+    ================================================== */
+    function escapeHTML(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    /* ==================================================
+       LOGOUT
+    ================================================== */
+    function logout() {
+        localStorage.removeItem("adminLoggedIn");
+        window.location.href = "admin-login.html";
+    }
+
+    /* ==================================================
+       CLOSE MODAL OUTSIDE
+    ================================================== */
+    window.onclick = function(event) {
+        const modal = document.getElementById("scheduleModal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+
+    /* ==================================================
+       INITIALIZE
+    ================================================== */
+    loadQuizOptions();
+    displaySchedules();
+</script>
+
+</body>
+</html>

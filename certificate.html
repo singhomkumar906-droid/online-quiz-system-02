@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Certificate - QUIZCORE</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(0, 255, 255, 0.12), transparent 35%),
+                #020607;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+            box-sizing: border-box;
+        }
+
+        .certificate-page {
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+        }
+
+        .certificate {
+            position: relative;
+            width: 100%;
+            min-height: 620px;
+            box-sizing: border-box;
+
+            background:
+                linear-gradient(135deg, #050909, #071416, #020606);
+
+            border: 3px solid #00ffff;
+            box-shadow:
+                0 0 15px #00ffff,
+                0 0 35px rgba(0, 255, 255, 0.5),
+                inset 0 0 40px rgba(0, 255, 255, 0.08);
+
+            padding: 55px;
+            overflow: hidden;
+        }
+
+        .certificate::before,
+        .certificate::after {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid #00ffff;
+        }
+
+        .certificate::before {
+            top: 15px;
+            left: 15px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .certificate::after {
+            bottom: 15px;
+            right: 15px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .logo {
+            font-size: 22px;
+            letter-spacing: 5px;
+            color: #00ffff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .certificate-title {
+            margin-top: 35px;
+            font-size: 46px;
+            color: #ffffff;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-shadow:
+                0 0 10px #00ffff,
+                0 0 25px rgba(0, 255, 255, 0.5);
+        }
+
+        .subtitle {
+            color: #8fffff;
+            font-size: 17px;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .presented {
+            margin-top: 50px;
+            color: #aaaaaa;
+            font-size: 17px;
+        }
+
+        .student-name {
+            margin: 18px auto;
+            padding: 10px 20px;
+            font-size: 38px;
+            font-weight: bold;
+            color: #00ffff;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px #00ffff;
+            border-bottom: 2px solid #00ffff;
+            display: inline-block;
+            min-width: 300px;
+        }
+
+        .achievement {
+            max-width: 700px;
+            margin: 30px auto;
+            font-size: 18px;
+            line-height: 1.8;
+            color: #dddddd;
+        }
+
+        .result-box {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 35px auto;
+            flex-wrap: wrap;
+        }
+
+        .result-item {
+            min-width: 180px;
+            padding: 18px 30px;
+            border: 1px solid #00ffff;
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+            background: rgba(0, 255, 255, 0.04);
+        }
+
+        .result-label {
+            display: block;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-value {
+            color: #00ffff;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .pass {
+            color: #00ff99;
+            text-shadow: 0 0 10px #00ff99;
+        }
+
+        .date {
+            margin-top: 30px;
+            color: #aaaaaa;
+            font-size: 15px;
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 55px;
+            padding: 0 50px;
+        }
+
+        .signature {
+            width: 200px;
+            border-top: 1px solid #00ffff;
+            padding-top: 10px;
+            color: #aaaaaa;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 13px 25px;
+            border: 1px solid #00ffff;
+            background: transparent;
+            color: #00ffff;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        @media (max-width: 700px) {
+
+            .certificate {
+                padding: 35px 20px;
+                min-height: auto;
+            }
+
+            .certificate-title {
+                font-size: 30px;
+            }
+
+            .student-name {
+                font-size: 27px;
+                min-width: 200px;
+            }
+
+            .achievement {
+                font-size: 15px;
+            }
+
+            .signature-area {
+                padding: 0;
+                gap: 25px;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media print {
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .buttons {
+                display: none;
+            }
+
+            .certificate {
+                box-shadow: none;
+                min-height: 620px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="certificate-page">
+
+    <div class="certificate" id="certificate">
+
+        <div class="logo">
+            QUIZCORE
+        </div>
+
+        <div class="certificate-title">
+            Certificate
+        </div>
+
+        <div class="subtitle">
+            OF ACHIEVEMENT
+        </div>
+
+        <div class="presented">
+            This certificate is proudly presented to
+        </div>
+
+        <div class="student-name" id="studentName">
+            Student Name
+        </div>
+
+        <div class="achievement">
+            For successfully completing the Online Quiz
+            and demonstrating satisfactory knowledge and performance.
+        </div>
+
+        <div class="result-box">
+
+            <div class="result-item">
+                <span class="result-label">
+                    Score
+                </span>
+
+                <span class="result-value" id="score">
+                    0
+                </span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">
+                    Percentage
+                </span>
+
+                <span class="result-value" id="percentage">
+                    0%
+                </span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">
+                    Result
+                </span>
+
+                <span class="result-value pass">
+                    PASS
+                </span>
+            </div>
+
+        </div>
+
+        <div class="date">
+            Date: <span id="date"></span>
+        </div>
+
+        <div class="signature-area">
+
+            <div class="signature">
+                Quiz Coordinator
+            </div>
+
+            <div class="signature">
+                Authorized Signature
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="buttons">
+
+        <button class="btn" onclick="downloadCertificate()">
+            DOWNLOAD PDF
+        </button>
+
+        <button class="btn" onclick="shareCertificate()">
+            SHARE
+        </button>
+
+        <a href="index.html" class="btn">
+            HOME
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Get result data
+    const resultData = JSON.parse(
+        localStorage.getItem("quizResult")
+    );
+
+    const studentData = JSON.parse(
+        localStorage.getItem("quizStudent")
+    );
+
+
+    // Student Name
+    if (studentData && studentData.name) {
+        document.getElementById("studentName").textContent =
+            studentData.name;
+    }
+
+
+    // Score
+    if (resultData && resultData.score !== undefined) {
+        document.getElementById("score").textContent =
+            resultData.score;
+    }
+
+
+    // Percentage
+    if (resultData && resultData.percentage !== undefined) {
+        document.getElementById("percentage").textContent =
+            resultData.percentage + "%";
+    }
+
+
+    // Date
+    const today = new Date();
+
+    document.getElementById("date").textContent =
+        today.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        });
+
+
+    // Download PDF
+    function downloadCertificate() {
+
+        const { jsPDF } = window.jspdf;
+
+        const doc = new jsPDF("landscape", "mm", "a4");
+
+        const name =
+            document.getElementById("studentName").textContent;
+
+        const score =
+            document.getElementById("score").textContent;
+
+        const percentage =
+            document.getElementById("percentage").textContent;
+
+        const date =
+            document.getElementById("date").textContent;
+
+
+        // Background
+        doc.setFillColor(3, 8, 9);
+        doc.rect(0, 0, 297, 210, "F");
+
+
+        // Outer border
+        doc.setDrawColor(0, 255, 255);
+        doc.setLineWidth(1);
+
+        doc.rect(8, 8, 281, 194);
+
+
+        // Inner border
+        doc.setLineWidth(0.3);
+        doc.rect(14, 14, 269, 182);
+
+
+        // Logo
+        doc.setTextColor(0, 255, 255);
+        doc.setFontSize(18);
+        doc.setFont("helvetica", "bold");
+
+        doc.text(
+            "QUIZCORE",
+            148.5,
+            30,
+            { align: "center" }
+        );
+
+
+        // Title
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(32);
+
+        doc.text(
+            "CERTIFICATE",
+            148.5,
+            52,
+            { align: "center" }
+        );
+
+
+        doc.setTextColor(0, 255, 255);
+        doc.setFontSize(13);
+
+        doc.text(
+            "OF ACHIEVEMENT",
+            148.5,
+            62,
+            { align: "center" }
+        );
+
+
+        // Presented
+        doc.setTextColor(180, 180, 180);
+        doc.setFontSize(12);
+
+        doc.text(
+            "This certificate is proudly presented to",
+            148.5,
+            78,
+            { align: "center" }
+        );
+
+
+        // Name
+        doc.setTextColor(0, 255, 255);
+        doc.setFontSize(25);
+
+        doc.text(
+            name.toUpperCase(),
+            148.5,
+            95,
+            { align: "center" }
+        );
+
+
+        // Line
+        doc.setDrawColor(0, 255, 255);
+
+        doc.line(
+            75,
+            100,
+            222,
+            100
+        );
+
+
+        // Achievement
+        doc.setTextColor(220, 220, 220);
+        doc.setFontSize(11);
+
+        doc.text(
+            "For successfully completing the Online Quiz",
+            148.5,
+            115,
+            { align: "center" }
+        );
+
+        doc.text(
+            "and demonstrating satisfactory knowledge and performance.",
+            148.5,
+            123,
+            { align: "center" }
+        );
+
+
+        // Score
+        doc.setTextColor(0, 255, 255);
+        doc.setFontSize(14);
+
+        doc.text(
+            "SCORE: " + score,
+            90,
+            143,
+            { align: "center" }
+        );
+
+
+        // Percentage
+        doc.text(
+            "PERCENTAGE: " + percentage + "%",
+            207,
+            143,
+            { align: "center" }
+        );
+
+
+        // PASS
+        doc.setTextColor(0, 255, 150);
+        doc.setFontSize(18);
+
+        doc.text(
+            "PASS",
+            148.5,
+            158,
+            { align: "center" }
+        );
+
+
+        // Date
+        doc.setTextColor(180, 180, 180);
+        doc.setFontSize(10);
+
+        doc.text(
+            "Date: " + date,
+            148.5,
+            173,
+            { align: "center" }
+        );
+
+
+        // Signatures
+        doc.setDrawColor(0, 255, 255);
+
+        doc.line(
+            45,
+            188,
+            100,
+            188
+        );
+
+        doc.line(
+            197,
+            188,
+            252,
+            188
+        );
+
+
+        doc.setTextColor(170, 170, 170);
+        doc.setFontSize(9);
+
+        doc.text(
+            "Quiz Coordinator",
+            72.5,
+            194,
+            { align: "center" }
+        );
+
+        doc.text(
+            "Authorized Signature",
+            224.5,
+            194,
+            { align: "center" }
+        );
+
+
+        // Save
+        doc.save(
+            "Quizcore_Certificate_" +
+            name.replace(/\s+/g, "_") +
+            ".pdf"
+        );
+    }
+
+
+    // Share
+    function shareCertificate() {
+
+        const name =
+            document.getElementById("studentName").textContent;
+
+        const percentage =
+            document.getElementById("percentage").textContent;
+
+
+        const text =
+            "I have successfully passed the QUIZCORE Online Quiz! " +
+            "Student: " + name +
+            " | Percentage: " + percentage +
+            " | Result: PASS";
+
+
+        if (navigator.share) {
+
+            navigator.share({
+                title: "QUIZCORE Certificate",
+                text: text
+            });
+
+        } else {
+
+            const whatsappURL =
+                "https://wa.me/?text=" +
+                encodeURIComponent(text);
+
+            window.open(
+                whatsappURL,
+                "_blank"
+            );
+        }
+    }
+
+</script>
+
+</body>
+</html>

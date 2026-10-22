@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Registration | QUIZCORE</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Registration Page */
+
+        .register-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 850px;
+            padding: 40px;
+
+            background: rgba(4, 13, 16, 0.94);
+            border: 1px solid rgba(0, 245, 255, 0.35);
+            border-radius: 10px;
+
+            box-shadow:
+                0 0 20px rgba(0, 245, 255, 0.10),
+                0 0 50px rgba(0, 245, 255, 0.05);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .register-header .tag {
+            color: #00f5ff;
+            font-family: "Orbitron", sans-serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+        }
+
+        .register-header h1 {
+            margin-top: 12px;
+            font-family: "Orbitron", sans-serif;
+            font-size: 30px;
+            color: #f2ffff;
+        }
+
+        .register-header h1 span {
+            color: #00f5ff;
+            text-shadow: 0 0 12px rgba(0, 245, 255, 0.6);
+        }
+
+        .register-header p {
+            margin-top: 10px;
+            color: #6f8589;
+            font-size: 12px;
+        }
+
+        .form-section-title {
+            margin: 28px 0 15px;
+
+            color: #00f5ff;
+
+            font-family: "Orbitron", sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+
+            border-bottom: 1px solid rgba(0, 245, 255, 0.12);
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            margin-bottom: 7px;
+
+            color: #b8c9cc;
+
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+
+            height: 48px;
+            padding: 0 14px;
+
+            color: #f2ffff;
+            background: #03090b;
+
+            border: 1px solid rgba(0, 245, 255, 0.20);
+            border-radius: 5px;
+
+            outline: none;
+
+            font-family: "Poppins", sans-serif;
+            font-size: 12px;
+
+            transition: 0.3s ease;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group input::placeholder {
+            color: #53676b;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #00f5ff;
+
+            box-shadow:
+                0 0 10px rgba(0, 245, 255, 0.12),
+                inset 0 0 8px rgba(0, 245, 255, 0.03);
+        }
+
+        .form-group select option {
+            background: #03090b;
+            color: white;
+        }
+
+        .register-actions {
+            margin-top: 35px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .register-actions button,
+        .register-actions a {
+            min-height: 50px;
+            padding: 0 25px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 5px;
+
+            font-family: "Orbitron", sans-serif;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition: 0.3s ease;
+        }
+
+        .register-submit {
+            border: 1px solid #00f5ff;
+            background: #00f5ff;
+            color: #001214;
+
+            box-shadow:
+                0 0 12px rgba(0, 245, 255, 0.3);
+        }
+
+        .register-submit:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 20px rgba(0, 245, 255, 0.5);
+        }
+
+        .back-home {
+            border: 1px solid rgba(0, 245, 255, 0.4);
+            background: transparent;
+            color: #00f5ff;
+        }
+
+        .back-home:hover {
+            background: rgba(0, 245, 255, 0.07);
+        }
+
+        .login-note {
+            margin-top: 25px;
+            text-align: center;
+
+            color: #6f8589;
+            font-size: 11px;
+        }
+
+        .login-note a {
+            color: #00f5ff;
+            text-decoration: none;
+        }
+
+        .login-note a:hover {
+            text-decoration: underline;
+        }
+
+
+        @media (max-width: 650px) {
+
+            .register-box {
+                padding: 25px 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .register-header h1 {
+                font-size: 24px;
+            }
+
+            .register-actions {
+                flex-direction: column;
+            }
+
+            .register-actions button,
+            .register-actions a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- Background -->
+    <div class="grid-background"></div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+
+    <!-- Registration -->
+    <main class="register-page">
+
+        <div class="register-box">
+
+            <div class="register-header">
+
+                <div class="tag">
+                    // STUDENT REGISTRATION
+                </div>
+
+                <h1>
+                    CREATE YOUR
+                    <span>ACCOUNT</span>
+                </h1>
+
+                <p>
+                    Register yourself before attending the online quiz.
+                </p>
+
+            </div>
+
+
+            <form id="registrationForm">
+
+
+                <!-- Personal Information -->
+
+                <div class="form-section-title">
+                    PERSONAL INFORMATION
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+                        <label for="studentName">
+                            STUDENT NAME
+                        </label>
+
+                        <input
+                            type="text"
+                            id="studentName"
+                            name="studentName"
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="rollNo">
+                            ROLL NUMBER
+                        </label>
+
+                        <input
+                            type="text"
+                            id="rollNo"
+                            name="rollNo"
+                            placeholder="Enter roll number"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            EMAIL
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter email address"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Academic Information -->
+
+                <div class="form-section-title">
+                    ACADEMIC INFORMATION
+                </div>
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="branch">
+                            BRANCH
+                        </label>
+
+                        <select id="branch" name="branch" required>
+
+                            <option value="">
+                                Select Branch
+                            </option>
+
+                            <option value="CSE">
+                                Computer Science & Engineering
+                            </option>
+
+                            <option value="IT">
+                                Information Technology
+                            </option>
+
+                            <option value="ECE">
+                                Electronics & Communication
+                            </option>
+
+                            <option value="ME">
+                                Mechanical Engineering
+                            </option>
+
+                            <option value="CE">
+                                Civil Engineering
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="course">
+                            COURSE
+                        </label>
+
+                        <select id="course" name="course" required>
+
+                            <option value="">
+                                Select Course
+                            </option>
+
+                            <option value="B.Tech">
+                                B.Tech
+                            </option>
+
+                            <option value="M.Tech">
+                                M.Tech
+                            </option>
+
+                            <option value="BCA">
+                                BCA
+                            </option>
+
+                            <option value="MCA">
+                                MCA
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="subject">
+                            SUBJECT
+                        </label>
+
+                        <input
+                            type="text"
+                            id="subject"
+                            name="subject"
+                            placeholder="Enter subject"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="section">
+                            SECTION
+                        </label>
+
+                        <select id="section" name="section" required>
+
+                            <option value="">
+                                Select Section
+                            </option>
+
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                            <option value="E">Section E</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Quiz Information -->
+
+                <div class="form-section-title">
+                    QUIZ INFORMATION
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+
+                        <label for="quizSet">
+                            QUIZ SET
+                        </label>
+
+                        <select id="quizSet" name="quizSet" required>
+
+                            <option value="">
+                                Select Quiz Set
+                            </option>
+
+                            <option value="Set A">
+                                Quiz Set A
+                            </option>
+
+                            <option value="Set B">
+                                Quiz Set B
+                            </option>
+
+                            <option value="Set C">
+                                Quiz Set C
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Account Information -->
+
+                <div class="form-section-title">
+                    ACCOUNT INFORMATION
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            PASSWORD
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create password"
+                            minlength="6"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            CONFIRM PASSWORD
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm password"
+                            minlength="6"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="register-actions">
+
+                    <a
+                        href="index.html"
+                        class="back-home"
+                    >
+                        ← BACK
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="register-submit"
+                    >
+                        REGISTER & CONTINUE →
+                    </button>
+
+                </div>
+
+
+                <div class="login-note">
+
+                    Already registered?
+
+                    <a href="login.html">
+                        Student Login
+                    </a>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        const registrationForm =
+            document.getElementById("registrationForm");
+
+
+        registrationForm.addEventListener(
+            "submit",
+            function (event) {
+
+                event.preventDefault();
+
+
+                const password =
+                    document.getElementById("password").value;
+
+                const confirmPassword =
+                    document.getElementById("confirmPassword").value;
+
+
+                // Password check
+
+                if (password !== confirmPassword) {
+
+                    alert("Password and Confirm Password do not match.");
+
+                    return;
+                }
+
+
+                // Get student name
+
+                const studentName =
+                    document.getElementById("studentName").value.trim();
+
+
+                // Temporary registration data
+                // Later this will be connected to MySQL backend.
+
+                const studentData = {
+
+                    name: studentName,
+
+                    rollNo:
+                        document.getElementById("rollNo").value.trim(),
+
+                    email:
+                        document.getElementById("email").value.trim(),
+
+                    branch:
+                        document.getElementById("branch").value,
+
+                    course:
+                        document.getElementById("course").value,
+
+                    subject:
+                        document.getElementById("subject").value.trim(),
+
+                    section:
+                        document.getElementById("section").value,
+
+                    quizSet:
+                        document.getElementById("quizSet").value,
+
+                    registeredAt:
+                        new Date().toISOString()
+
+                };
+
+
+                // Store temporarily in browser
+
+                localStorage.setItem(
+                    "quizStudent",
+                    JSON.stringify(studentData)
+                );
+
+
+                alert(
+                    "Registration successful! You can now continue to login."
+                );
+
+
+                // Go to login page
+
+                window.location.href = "login.html";
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

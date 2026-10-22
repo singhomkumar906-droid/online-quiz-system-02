@@ -1,0 +1,3173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Quiz Management</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #050505;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        .admin-wrapper {
+            min-height: 100vh;
+            padding: 25px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 22px;
+            margin-bottom: 25px;
+
+            background: #0b0b0b;
+            border: 1px solid #00f7ff;
+            border-radius: 12px;
+
+            box-shadow:
+                0 0 10px rgba(0, 247, 255, 0.3),
+                inset 0 0 10px rgba(0, 247, 255, 0.05);
+        }
+
+        .logo {
+            color: #00f7ff;
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .top-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 11px 18px;
+            border-radius: 7px;
+            color: #ffffff;
+            background: #111111;
+            border: 1px solid #00f7ff;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #00f7ff;
+            color: #000000;
+            box-shadow: 0 0 15px #00f7ff;
+        }
+
+        .btn-danger {
+            border-color: #ff3b3b;
+        }
+
+        .btn-danger:hover {
+            background: #ff3b3b;
+            color: white;
+            box-shadow: 0 0 15px #ff3b3b;
+        }
+
+        .btn-green {
+            border-color: #00ff88;
+        }
+
+        .btn-green:hover {
+            background: #00ff88;
+            color: #000;
+            box-shadow: 0 0 15px #00ff88;
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            color: #00f7ff;
+            font-size: 30px;
+        }
+
+        .page-title p {
+            color: #aaa;
+            margin-top: 7px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #0b0b0b;
+            border: 1px solid #1a3d3f;
+            border-radius: 12px;
+            padding: 22px;
+
+            box-shadow:
+                0 0 12px rgba(0, 247, 255, 0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #00f7ff;
+            border-bottom: 1px solid #16383a;
+            padding-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #d7d7d7;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+
+            background: #050505;
+            color: #ffffff;
+
+            border: 1px solid #24585b;
+            border-radius: 7px;
+
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #00f7ff;
+            box-shadow: 0 0 8px rgba(0, 247, 255, 0.25);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .checkbox-row input {
+            width: auto;
+        }
+
+        .quiz-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .quiz-item {
+            padding: 15px;
+            border: 1px solid #16484b;
+            border-radius: 10px;
+            background: #080808;
+        }
+
+        .quiz-item h3 {
+            margin: 0 0 8px;
+            color: #00f7ff;
+        }
+
+        .quiz-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 8px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #111;
+            border: 1px solid #345;
+        }
+
+        .active-badge {
+            color: #00ff88;
+            border-color: #00ff88;
+        }
+
+        .inactive-badge {
+            color: #ff6666;
+            border-color: #ff6666;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .question-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .question-item {
+            background: #070707;
+            border: 1px solid #183f41;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .question-number {
+            color: #00f7ff;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 5px;
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        .correct-option {
+            color: #00ff88;
+        }
+
+        .difficulty {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 4px 9px;
+            border-radius: 15px;
+            font-size: 11px;
+            border: 1px solid #777;
+        }
+
+        .difficulty.easy {
+            color: #00ff88;
+            border-color: #00ff88;
+        }
+
+        .difficulty.medium {
+            color: #ffd000;
+            border-color: #ffd000;
+        }
+
+        .difficulty.hard {
+            color: #ff5555;
+            border-color: #ff5555;
+        }
+
+        .empty {
+            padding: 25px;
+            text-align: center;
+            color: #777;
+            border: 1px dashed #333;
+            border-radius: 8px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 7px;
+            border: 1px solid #00f7ff;
+            color: #00f7ff;
+            background: rgba(0, 247, 255, 0.05);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            padding: 18px;
+            text-align: center;
+            background: #080808;
+            border: 1px solid #16484b;
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            color: #00f7ff;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .schedule-info {
+            padding: 12px;
+            margin-top: 12px;
+            background: #080808;
+            border-left: 3px solid #00f7ff;
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1000px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .admin-wrapper {
+                padding: 12px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .two-column,
+            .three-column,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title h1 {
+                font-size: 24px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ================= TOP BAR ================= -->
+
+    <div class="topbar">
+
+        <div class="logo">
+            QUIZCORE ADMIN
+        </div>
+
+        <div class="top-buttons">
+
+            <button
+                class="btn"
+                onclick="goDashboard()">
+                Dashboard
+            </button>
+
+            <button
+                class="btn btn-danger"
+                onclick="logoutAdmin()">
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= TITLE ================= -->
+
+    <div class="page-title">
+
+        <h1>Quiz Management</h1>
+
+        <p>
+            Create quizzes, questions and schedules
+        </p>
+
+    </div>
+
+
+    <div id="message" class="message"></div>
+
+
+    <!-- ================= STATS ================= -->
+
+    <div class="stats">
+
+        <div class="stat">
+            <div
+                id="totalQuizCount"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-label">
+                Total Quizzes
+            </div>
+        </div>
+
+
+        <div class="stat">
+
+            <div
+                id="activeQuizCount"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-label">
+                Active Quizzes
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div
+                id="totalQuestionCount"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-label">
+                Total Questions
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div
+                id="scheduleCount"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-label">
+                Schedules
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= MAIN GRID ================= -->
+
+    <div class="grid">
+
+
+        <!-- ================= CREATE QUIZ ================= -->
+
+        <div class="card">
+
+            <h2 id="quizFormTitle">
+                Create Quiz
+            </h2>
+
+
+            <form id="quizForm">
+
+                <input
+                    type="hidden"
+                    id="editingQuizName">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Quiz Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="quizName"
+                        placeholder="Example: Java Basics"
+                        required>
+
+                </div>
+
+
+                <div class="two-column">
+
+                    <div class="form-group">
+
+                        <label>
+                            Subject
+                        </label>
+
+                        <input
+                            type="text"
+                            id="quizSubject"
+                            placeholder="Example: Java"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Course
+                        </label>
+
+                        <input
+                            type="text"
+                            id="quizCourse"
+                            placeholder="Example: B.Tech CSE">
+
+                    </div>
+
+                </div>
+
+
+                <div class="three-column">
+
+                    <div class="form-group">
+
+                        <label>
+                            Total Questions
+                        </label>
+
+                        <select
+                            id="totalQuestions"
+                            required>
+
+                            <option value="9">
+                                9 Questions
+                            </option>
+
+                            <option value="12">
+                                12 Questions
+                            </option>
+
+                            <option value="15">
+                                15 Questions
+                            </option>
+
+                            <option value="30">
+                                30 Questions
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Marks / Question
+                        </label>
+
+                        <input
+                            type="number"
+                            id="marks"
+                            value="1"
+                            min="1"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Duration (Minutes)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="duration"
+                            value="30"
+                            min="1"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="checkbox-row">
+
+                    <input
+                        type="checkbox"
+                        id="quizActive"
+                        checked>
+
+                    <label for="quizActive">
+                        Quiz Active
+                    </label>
+
+                </div>
+
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                    <button
+                        type="submit"
+                        class="btn btn-green"
+                        id="quizSubmitButton">
+                        Create Quiz
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn"
+                        onclick="resetQuizForm()">
+                        Clear
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- ================= QUIZ LIST ================= -->
+
+        <div class="card">
+
+            <h2>
+                Existing Quizzes
+            </h2>
+
+            <div
+                id="quizList"
+                class="quiz-list">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= QUESTION FORM ================= -->
+
+    <div class="card" style="margin-bottom:25px;">
+
+        <h2 id="questionFormTitle">
+            Add Question
+        </h2>
+
+
+        <form id="questionForm">
+
+            <div class="two-column">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Select Quiz
+                    </label>
+
+                    <select
+                        id="questionQuiz"
+                        required>
+
+                        <option value="">
+                            Select Quiz
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Difficulty
+                    </label>
+
+                    <select
+                        id="difficulty"
+                        required>
+
+                        <option value="Easy">
+                            Easy
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="Hard">
+                            Hard
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Question
+                </label>
+
+                <textarea
+                    id="questionText"
+                    placeholder="Enter question..."
+                    required></textarea>
+
+            </div>
+
+
+            <div class="two-column">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Option A
+                    </label>
+
+                    <input
+                        type="text"
+                        id="optionA"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Option B
+                    </label>
+
+                    <input
+                        type="text"
+                        id="optionB"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Option C
+                    </label>
+
+                    <input
+                        type="text"
+                        id="optionC"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Option D
+                    </label>
+
+                    <input
+                        type="text"
+                        id="optionD"
+                        required>
+
+                </div>
+
+            </div>
+
+
+            <div class="two-column">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Correct Answer
+                    </label>
+
+                    <select
+                        id="correctAnswer"
+                        required>
+
+                        <option value="A">
+                            A
+                        </option>
+
+                        <option value="B">
+                            B
+                        </option>
+
+                        <option value="C">
+                            C
+                        </option>
+
+                        <option value="D">
+                            D
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Question ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="questionId"
+                        placeholder="Auto generated"
+                        readonly>
+
+                </div>
+
+            </div>
+
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                <button
+                    type="submit"
+                    class="btn btn-green"
+                    id="questionSubmitButton">
+                    Add Question
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="resetQuestionForm()">
+                    Clear
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= QUESTIONS ================= -->
+
+    <div class="card">
+
+        <h2>
+            Question Bank
+        </h2>
+
+
+        <div
+            id="questionList"
+            class="question-list">
+        </div>
+
+    </div>
+
+
+    <!-- ================= SCHEDULE ================= -->
+
+    <div
+        class="card"
+        style="margin-top:25px;">
+
+        <h2>
+            Quiz Schedule
+        </h2>
+
+
+        <form id="scheduleForm">
+
+            <div class="two-column">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Quiz
+                    </label>
+
+                    <select
+                        id="scheduleQuiz"
+                        required>
+
+                        <option value="">
+                            Select Quiz
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Schedule Status
+                    </label>
+
+                    <select
+                        id="scheduleActive">
+
+                        <option value="true">
+                            Active
+                        </option>
+
+                        <option value="false">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="two-column">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Start Date & Time
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="startDateTime"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        End Date & Time
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="endDateTime"
+                        required>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-green">
+
+                Save Schedule
+
+            </button>
+
+        </form>
+
+
+        <div
+            id="scheduleList"
+            style="margin-top:20px;">
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ADMIN AUTH
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        checkAdminLogin();
+
+        loadAllData();
+
+    }
+);
+
+
+function checkAdminLogin() {
+
+    /*
+       If your admin-login.html stores a different
+       localStorage key, change it here.
+    */
+
+    const adminLoggedIn =
+        localStorage.getItem("adminLoggedIn");
+
+    if (adminLoggedIn !== "true") {
+
+        /*
+           Uncomment this if you want login protection.
+
+           window.location.href =
+               "admin-login.html";
+        */
+
+        console.log(
+            "Admin login check:"
+            + " demo mode"
+        );
+    }
+}
+
+
+function logoutAdmin() {
+
+    localStorage.removeItem(
+        "adminLoggedIn"
+    );
+
+    window.location.href =
+        "admin-login.html";
+}
+
+
+function goDashboard() {
+
+    window.location.href =
+        "admin-dashboard.html";
+}
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function getQuizzes() {
+
+    return JSON.parse(
+        localStorage.getItem("quizzes")
+        || "[]"
+    );
+
+}
+
+
+function saveQuizzes(quizzes) {
+
+    localStorage.setItem(
+        "quizzes",
+        JSON.stringify(quizzes)
+    );
+
+}
+
+
+function getQuestions() {
+
+    return JSON.parse(
+        localStorage.getItem("questions")
+        || "[]"
+    );
+
+}
+
+
+function saveQuestions(questions) {
+
+    localStorage.setItem(
+        "questions",
+        JSON.stringify(questions)
+    );
+
+}
+
+
+function getSchedules() {
+
+    return JSON.parse(
+        localStorage.getItem("quizSchedules")
+        || "[]"
+    );
+
+}
+
+
+function saveSchedules(schedules) {
+
+    localStorage.setItem(
+        "quizSchedules",
+        JSON.stringify(schedules)
+    );
+
+}
+
+
+/* =========================================================
+   LOAD ALL DATA
+========================================================= */
+
+function loadAllData() {
+
+    renderStats();
+
+    renderQuizList();
+
+    populateQuizSelects();
+
+    renderQuestionList();
+
+    renderScheduleList();
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function renderStats() {
+
+    const quizzes =
+        getQuizzes();
+
+    const questions =
+        getQuestions();
+
+    const schedules =
+        getSchedules();
+
+
+    document.getElementById(
+        "totalQuizCount"
+    ).textContent =
+        quizzes.length;
+
+
+    document.getElementById(
+        "activeQuizCount"
+    ).textContent =
+        quizzes.filter(
+            q => q.active === true
+        ).length;
+
+
+    document.getElementById(
+        "totalQuestionCount"
+    ).textContent =
+        questions.length;
+
+
+    document.getElementById(
+        "scheduleCount"
+    ).textContent =
+        schedules.length;
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function showMessage(
+    message,
+    type = "success"
+) {
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+    box.textContent =
+        message;
+
+    box.style.display =
+        "block";
+
+    if (type === "error") {
+
+        box.style.color =
+            "#ff5555";
+
+        box.style.borderColor =
+            "#ff5555";
+
+    } else {
+
+        box.style.color =
+            "#00f7ff";
+
+        box.style.borderColor =
+            "#00f7ff";
+    }
+
+
+    setTimeout(
+        function () {
+
+            box.style.display =
+                "none";
+
+        },
+        3000
+    );
+
+}
+
+
+/* =========================================================
+   CREATE / EDIT QUIZ
+========================================================= */
+
+document.getElementById(
+    "quizForm"
+).addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault();
+
+
+        const name =
+            document.getElementById(
+                "quizName"
+            ).value.trim();
+
+
+        const subject =
+            document.getElementById(
+                "quizSubject"
+            ).value.trim();
+
+
+        const course =
+            document.getElementById(
+                "quizCourse"
+            ).value.trim();
+
+
+        const totalQuestions =
+            Number(
+                document.getElementById(
+                    "totalQuestions"
+                ).value
+            );
+
+
+        const marks =
+            Number(
+                document.getElementById(
+                    "marks"
+                ).value
+            );
+
+
+        const duration =
+            Number(
+                document.getElementById(
+                    "duration"
+                ).value
+            );
+
+
+        const active =
+            document.getElementById(
+                "quizActive"
+            ).checked;
+
+
+        const editingName =
+            document.getElementById(
+                "editingQuizName"
+            ).value;
+
+
+        /* Equal distribution check */
+
+        if (totalQuestions % 3 !== 0) {
+
+            showMessage(
+                "Total questions must be divisible by 3.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const questionsPerDifficulty =
+            totalQuestions / 3;
+
+
+        let quizzes =
+            getQuizzes();
+
+
+        /* EDIT QUIZ */
+
+        if (editingName) {
+
+            const index =
+                quizzes.findIndex(
+                    q =>
+                        q.name ===
+                        editingName
+                );
+
+
+            if (index === -1) {
+
+                showMessage(
+                    "Quiz not found.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /*
+               Keep the quiz name unique.
+            */
+
+            if (
+                name !== editingName &&
+                quizzes.some(
+                    q => q.name === name
+                )
+            ) {
+
+                showMessage(
+                    "Quiz name already exists.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            quizzes[index] = {
+
+                ...quizzes[index],
+
+                name: name,
+
+                subject: subject,
+
+                course: course,
+
+                totalQuestions:
+                    totalQuestions,
+
+                marks: marks,
+
+                duration: duration,
+
+                active: active,
+
+                easyCount:
+                    questionsPerDifficulty,
+
+                mediumCount:
+                    questionsPerDifficulty,
+
+                hardCount:
+                    questionsPerDifficulty
+            };
+
+
+            saveQuizzes(
+                quizzes
+            );
+
+
+            /*
+               Update schedule quiz name
+               if quiz name was changed.
+            */
+
+            if (
+                name !== editingName
+            ) {
+
+                let schedules =
+                    getSchedules();
+
+
+                schedules =
+                    schedules.map(
+                        schedule => {
+
+                            if (
+                                schedule.quizName ===
+                                editingName
+                            ) {
+
+                                return {
+                                    ...schedule,
+                                    quizName: name
+                                };
+
+                            }
+
+                            return schedule;
+
+                        }
+                    );
+
+
+                saveSchedules(
+                    schedules
+                );
+
+
+                /*
+                   Update questions too
+                */
+
+                let questions =
+                    getQuestions();
+
+
+                questions =
+                    questions.map(
+                        question => {
+
+                            if (
+                                question.quiz ===
+                                editingName
+                            ) {
+
+                                return {
+                                    ...question,
+                                    quiz: name
+                                };
+
+                            }
+
+                            return question;
+
+                        }
+                    );
+
+
+                saveQuestions(
+                    questions
+                );
+
+            }
+
+
+            showMessage(
+                "Quiz updated successfully."
+            );
+
+        }
+
+        /* CREATE QUIZ */
+
+        else {
+
+            if (
+                quizzes.some(
+                    q => q.name === name
+                )
+            ) {
+
+                showMessage(
+                    "Quiz name already exists.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const quiz = {
+
+                name: name,
+
+                subject: subject,
+
+                course: course,
+
+                totalQuestions:
+                    totalQuestions,
+
+                marks: marks,
+
+                duration: duration,
+
+                active: active,
+
+                easyCount:
+                    questionsPerDifficulty,
+
+                mediumCount:
+                    questionsPerDifficulty,
+
+                hardCount:
+                    questionsPerDifficulty,
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            quizzes.push(
+                quiz
+            );
+
+
+            saveQuizzes(
+                quizzes
+            );
+
+
+            showMessage(
+                "Quiz created successfully."
+            );
+
+        }
+
+
+        resetQuizForm();
+
+        loadAllData();
+
+    }
+);
+
+
+/* =========================================================
+   RESET QUIZ FORM
+========================================================= */
+
+function resetQuizForm() {
+
+    document.getElementById(
+        "quizForm"
+    ).reset();
+
+
+    document.getElementById(
+        "quizActive"
+    ).checked = true;
+
+
+    document.getElementById(
+        "editingQuizName"
+    ).value = "";
+
+
+    document.getElementById(
+        "quizFormTitle"
+    ).textContent =
+        "Create Quiz";
+
+
+    document.getElementById(
+        "quizSubmitButton"
+    ).textContent =
+        "Create Quiz";
+
+}
+
+
+/* =========================================================
+   RENDER QUIZ LIST
+========================================================= */
+
+function renderQuizList() {
+
+    const container =
+        document.getElementById(
+            "quizList"
+        );
+
+
+    const quizzes =
+        getQuizzes();
+
+
+    if (quizzes.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No quizzes created yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        quizzes.map(
+            quiz => {
+
+                const questionCount =
+                    getQuestions().filter(
+                        q =>
+                            q.quiz ===
+                            quiz.name
+                    ).length;
+
+
+                const statusClass =
+                    quiz.active
+                        ? "active-badge"
+                        : "inactive-badge";
+
+
+                const statusText =
+                    quiz.active
+                        ? "ACTIVE"
+                        : "INACTIVE";
+
+
+                return `
+
+                    <div class="quiz-item">
+
+                        <h3>
+                            ${escapeHTML(
+                                quiz.name
+                            )}
+                        </h3>
+
+                        <div class="quiz-meta">
+
+                            <span class="badge">
+                                Subject:
+                                ${escapeHTML(
+                                    quiz.subject || "-"
+                                )}
+                            </span>
+
+                            <span class="badge">
+                                Total:
+                                ${quiz.totalQuestions}
+                            </span>
+
+                            <span class="badge">
+                                Marks:
+                                ${quiz.marks}
+                            </span>
+
+                            <span class="badge">
+                                Duration:
+                                ${quiz.duration} min
+                            </span>
+
+                            <span class="badge">
+                                Questions Added:
+                                ${questionCount}
+                            </span>
+
+                            <span class="badge ${statusClass}">
+                                ${statusText}
+                            </span>
+
+                        </div>
+
+
+                        <div class="schedule-info">
+
+                            Easy:
+                            ${quiz.easyCount || 0}
+
+                            &nbsp; | &nbsp;
+
+                            Medium:
+                            ${quiz.mediumCount || 0}
+
+                            &nbsp; | &nbsp;
+
+                            Hard:
+                            ${quiz.hardCount || 0}
+
+                        </div>
+
+
+                        <div class="quiz-actions">
+
+                            <button
+                                class="btn"
+                                onclick="editQuiz(
+                                    '${escapeJS(
+                                        quiz.name
+                                    )}'
+                                )">
+                                Edit
+                            </button>
+
+
+                            <button
+                                class="btn btn-green"
+                                onclick="toggleQuiz(
+                                    '${escapeJS(
+                                        quiz.name
+                                    )}'
+                                )">
+
+                                ${quiz.active
+                                    ? "Deactivate"
+                                    : "Activate"}
+
+                            </button>
+
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="deleteQuiz(
+                                    '${escapeJS(
+                                        quiz.name
+                                    )}'
+                                )">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   EDIT QUIZ
+========================================================= */
+
+function editQuiz(
+    quizName
+) {
+
+    const quiz =
+        getQuizzes().find(
+            q =>
+                q.name ===
+                quizName
+        );
+
+
+    if (!quiz) return;
+
+
+    document.getElementById(
+        "quizName"
+    ).value =
+        quiz.name;
+
+
+    document.getElementById(
+        "quizSubject"
+    ).value =
+        quiz.subject || "";
+
+
+    document.getElementById(
+        "quizCourse"
+    ).value =
+        quiz.course || "";
+
+
+    document.getElementById(
+        "totalQuestions"
+    ).value =
+        quiz.totalQuestions || 9;
+
+
+    document.getElementById(
+        "marks"
+    ).value =
+        quiz.marks || 1;
+
+
+    document.getElementById(
+        "duration"
+    ).value =
+        quiz.duration || 30;
+
+
+    document.getElementById(
+        "quizActive"
+    ).checked =
+        quiz.active !== false;
+
+
+    document.getElementById(
+        "editingQuizName"
+    ).value =
+        quiz.name;
+
+
+    document.getElementById(
+        "quizFormTitle"
+    ).textContent =
+        "Edit Quiz";
+
+
+    document.getElementById(
+        "quizSubmitButton"
+    ).textContent =
+        "Update Quiz";
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   ACTIVATE / DEACTIVATE QUIZ
+========================================================= */
+
+function toggleQuiz(
+    quizName
+) {
+
+    let quizzes =
+        getQuizzes();
+
+
+    const index =
+        quizzes.findIndex(
+            q =>
+                q.name ===
+                quizName
+        );
+
+
+    if (index === -1) return;
+
+
+    quizzes[index].active =
+        !quizzes[index].active;
+
+
+    saveQuizzes(
+        quizzes
+    );
+
+
+    showMessage(
+        quizzes[index].active
+            ? "Quiz activated."
+            : "Quiz deactivated."
+    );
+
+
+    loadAllData();
+
+}
+
+
+/* =========================================================
+   DELETE QUIZ
+========================================================= */
+
+function deleteQuiz(
+    quizName
+) {
+
+    const confirmDelete =
+        confirm(
+            "Delete quiz '" +
+            quizName +
+            "'?\n\nAll questions and schedules of this quiz will also be deleted."
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    let quizzes =
+        getQuizzes();
+
+
+    quizzes =
+        quizzes.filter(
+            q =>
+                q.name !==
+                quizName
+        );
+
+
+    saveQuizzes(
+        quizzes
+    );
+
+
+    /*
+       Delete questions
+    */
+
+    let questions =
+        getQuestions();
+
+
+    questions =
+        questions.filter(
+            q =>
+                q.quiz !==
+                quizName
+        );
+
+
+    saveQuestions(
+        questions
+    );
+
+
+    /*
+       Delete schedules
+    */
+
+    let schedules =
+        getSchedules();
+
+
+    schedules =
+        schedules.filter(
+            s =>
+                s.quizName !==
+                quizName
+        );
+
+
+    saveSchedules(
+        schedules
+    );
+
+
+    showMessage(
+        "Quiz deleted successfully."
+    );
+
+
+    loadAllData();
+
+}
+
+
+/* =========================================================
+   POPULATE SELECT BOXES
+========================================================= */
+
+function populateQuizSelects() {
+
+    const quizzes =
+        getQuizzes();
+
+
+    const questionQuiz =
+        document.getElementById(
+            "questionQuiz"
+        );
+
+
+    const scheduleQuiz =
+        document.getElementById(
+            "scheduleQuiz"
+        );
+
+
+    const currentQuestionQuiz =
+        questionQuiz.value;
+
+
+    const currentScheduleQuiz =
+        scheduleQuiz.value;
+
+
+    const options =
+        quizzes.map(
+            quiz => `
+
+                <option value="${escapeHTML(
+                    quiz.name
+                )}">
+
+                    ${escapeHTML(
+                        quiz.name
+                    )}
+
+                </option>
+
+            `
+        ).join("");
+
+
+    questionQuiz.innerHTML = `
+        <option value="">
+            Select Quiz
+        </option>
+        ${options}
+    `;
+
+
+    scheduleQuiz.innerHTML = `
+        <option value="">
+            Select Quiz
+        </option>
+        ${options}
+    `;
+
+
+    if (
+        quizzes.some(
+            q =>
+                q.name ===
+                currentQuestionQuiz
+        )
+    ) {
+
+        questionQuiz.value =
+            currentQuestionQuiz;
+
+    }
+
+
+    if (
+        quizzes.some(
+            q =>
+                q.name ===
+                currentScheduleQuiz
+        )
+    ) {
+
+        scheduleQuiz.value =
+            currentScheduleQuiz;
+
+    }
+
+}
+
+
+/* =========================================================
+   ADD / EDIT QUESTION
+========================================================= */
+
+document.getElementById(
+    "questionForm"
+).addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault();
+
+
+        const id =
+            document.getElementById(
+                "questionId"
+            ).value;
+
+
+        const quiz =
+            document.getElementById(
+                "questionQuiz"
+            ).value;
+
+
+        const difficulty =
+            document.getElementById(
+                "difficulty"
+            ).value;
+
+
+        const questionText =
+            document.getElementById(
+                "questionText"
+            ).value.trim();
+
+
+        const options = {
+
+            A:
+                document.getElementById(
+                    "optionA"
+                ).value.trim(),
+
+            B:
+                document.getElementById(
+                    "optionB"
+                ).value.trim(),
+
+            C:
+                document.getElementById(
+                    "optionC"
+                ).value.trim(),
+
+            D:
+                document.getElementById(
+                    "optionD"
+                ).value.trim()
+
+        };
+
+
+        const correctAnswer =
+            document.getElementById(
+                "correctAnswer"
+            ).value;
+
+
+        if (!quiz) {
+
+            showMessage(
+                "Please select a quiz.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        let questions =
+            getQuestions();
+
+
+        /* EDIT */
+
+        if (id) {
+
+            const index =
+                questions.findIndex(
+                    q =>
+                        String(q.id) ===
+                        String(id)
+                );
+
+
+            if (index === -1) {
+
+                showMessage(
+                    "Question not found.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            questions[index] = {
+
+                ...questions[index],
+
+                quiz: quiz,
+
+                difficulty:
+                    difficulty,
+
+                question:
+                    questionText,
+
+                options:
+                    options,
+
+                correctAnswer:
+                    correctAnswer
+
+            };
+
+
+            showMessage(
+                "Question updated successfully."
+            );
+
+        }
+
+        /* ADD */
+
+        else {
+
+            const newQuestion = {
+
+                id:
+                    "Q" +
+                    Date.now(),
+
+                quiz:
+                    quiz,
+
+                difficulty:
+                    difficulty,
+
+                question:
+                    questionText,
+
+                options:
+                    options,
+
+                correctAnswer:
+                    correctAnswer,
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            questions.push(
+                newQuestion
+            );
+
+
+            showMessage(
+                "Question added successfully."
+            );
+
+        }
+
+
+        saveQuestions(
+            questions
+        );
+
+
+        resetQuestionForm();
+
+        loadAllData();
+
+    }
+);
+
+
+/* =========================================================
+   RESET QUESTION FORM
+========================================================= */
+
+function resetQuestionForm() {
+
+    document.getElementById(
+        "questionForm"
+    ).reset();
+
+
+    document.getElementById(
+        "questionId"
+    ).value = "";
+
+
+    document.getElementById(
+        "difficulty"
+    ).value =
+        "Easy";
+
+
+    document.getElementById(
+        "questionFormTitle"
+    ).textContent =
+        "Add Question";
+
+
+    document.getElementById(
+        "questionSubmitButton"
+    ).textContent =
+        "Add Question";
+
+}
+
+
+/* =========================================================
+   RENDER QUESTION LIST
+========================================================= */
+
+function renderQuestionList() {
+
+    const container =
+        document.getElementById(
+            "questionList"
+        );
+
+
+    const questions =
+        getQuestions();
+
+
+    if (questions.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No questions added yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        questions.map(
+            (q, index) => {
+
+                const difficultyClass =
+                    String(
+                        q.difficulty || "Easy"
+                    ).toLowerCase();
+
+
+                const optionData =
+                    q.options || {};
+
+
+                return `
+
+                    <div class="question-item">
+
+                        <div class="question-number">
+
+                            Question ${index + 1}
+
+                        </div>
+
+
+                        <span class="difficulty ${difficultyClass}">
+
+                            ${escapeHTML(
+                                q.difficulty || "Easy"
+                            )}
+
+                        </span>
+
+
+                        <div>
+
+                            <strong>
+                                Quiz:
+                            </strong>
+
+                            ${escapeHTML(
+                                q.quiz || "-"
+                            )}
+
+                        </div>
+
+
+                        <div class="question-text">
+
+                            ${escapeHTML(
+                                q.question || ""
+                            )}
+
+                        </div>
+
+
+                        <div class="options">
+
+                            <div class="${
+                                q.correctAnswer === "A"
+                                    ? "correct-option"
+                                    : ""
+                            }">
+
+                                A.
+                                ${escapeHTML(
+                                    optionData.A || ""
+                                )}
+
+                            </div>
+
+
+                            <div class="${
+                                q.correctAnswer === "B"
+                                    ? "correct-option"
+                                    : ""
+                            }">
+
+                                B.
+                                ${escapeHTML(
+                                    optionData.B || ""
+                                )}
+
+                            </div>
+
+
+                            <div class="${
+                                q.correctAnswer === "C"
+                                    ? "correct-option"
+                                    : ""
+                            }">
+
+                                C.
+                                ${escapeHTML(
+                                    optionData.C || ""
+                                )}
+
+                            </div>
+
+
+                            <div class="${
+                                q.correctAnswer === "D"
+                                    ? "correct-option"
+                                    : ""
+                            }">
+
+                                D.
+                                ${escapeHTML(
+                                    optionData.D || ""
+                                )}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="quiz-actions">
+
+                            <button
+                                class="btn"
+                                onclick="editQuestion(
+                                    '${escapeJS(
+                                        q.id
+                                    )}'
+                                )">
+
+                                Edit
+
+                            </button>
+
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="deleteQuestion(
+                                    '${escapeJS(
+                                        q.id
+                                    )}'
+                                )">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   EDIT QUESTION
+========================================================= */
+
+function editQuestion(
+    questionId
+) {
+
+    const question =
+        getQuestions().find(
+            q =>
+                String(q.id) ===
+                String(questionId)
+        );
+
+
+    if (!question) return;
+
+
+    const options =
+        question.options || {};
+
+
+    document.getElementById(
+        "questionId"
+    ).value =
+        question.id;
+
+
+    document.getElementById(
+        "questionQuiz"
+    ).value =
+        question.quiz;
+
+
+    document.getElementById(
+        "difficulty"
+    ).value =
+        question.difficulty || "Easy";
+
+
+    document.getElementById(
+        "questionText"
+    ).value =
+        question.question || "";
+
+
+    document.getElementById(
+        "optionA"
+    ).value =
+        options.A || "";
+
+
+    document.getElementById(
+        "optionB"
+    ).value =
+        options.B || "";
+
+
+    document.getElementById(
+        "optionC"
+    ).value =
+        options.C || "";
+
+
+    document.getElementById(
+        "optionD"
+    ).value =
+        options.D || "";
+
+
+    document.getElementById(
+        "correctAnswer"
+    ).value =
+        question.correctAnswer || "A";
+
+
+    document.getElementById(
+        "questionFormTitle"
+    ).textContent =
+        "Edit Question";
+
+
+    document.getElementById(
+        "questionSubmitButton"
+    ).textContent =
+        "Update Question";
+
+
+    window.scrollTo({
+        top:
+            document.getElementById(
+                "questionForm"
+            ).getBoundingClientRect().top
+            +
+            window.scrollY
+            -
+            50,
+
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   DELETE QUESTION
+========================================================= */
+
+function deleteQuestion(
+    questionId
+) {
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this question?"
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    let questions =
+        getQuestions();
+
+
+    questions =
+        questions.filter(
+            q =>
+                String(q.id) !==
+                String(questionId)
+        );
+
+
+    saveQuestions(
+        questions
+    );
+
+
+    showMessage(
+        "Question deleted successfully."
+    );
+
+
+    loadAllData();
+
+}
+
+
+/* =========================================================
+   SAVE SCHEDULE
+========================================================= */
+
+document.getElementById(
+    "scheduleForm"
+).addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault();
+
+
+        const quizName =
+            document.getElementById(
+                "scheduleQuiz"
+            ).value;
+
+
+        const start =
+            document.getElementById(
+                "startDateTime"
+            ).value;
+
+
+        const end =
+            document.getElementById(
+                "endDateTime"
+            ).value;
+
+
+        const active =
+            document.getElementById(
+                "scheduleActive"
+            ).value === "true";
+
+
+        if (!quizName) {
+
+            showMessage(
+                "Please select a quiz.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (!start || !end) {
+
+            showMessage(
+                "Please select start and end time.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const startDate =
+            new Date(start);
+
+
+        const endDate =
+            new Date(end);
+
+
+        if (
+            endDate <=
+            startDate
+        ) {
+
+            showMessage(
+                "End time must be after start time.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        let schedules =
+            getSchedules();
+
+
+        /*
+           One active/current schedule
+           per quiz.
+        */
+
+        const existingIndex =
+            schedules.findIndex(
+                s =>
+                    s.quizName ===
+                    quizName
+            );
+
+
+        const schedule = {
+
+            quizName:
+                quizName,
+
+            startDateTime:
+                start,
+
+            endDateTime:
+                end,
+
+            active:
+                active,
+
+            updatedAt:
+                new Date().toISOString()
+
+        };
+
+
+        if (
+            existingIndex !== -1
+        ) {
+
+            schedules[
+                existingIndex
+            ] =
+                schedule;
+
+        } else {
+
+            schedules.push(
+                schedule
+            );
+
+        }
+
+
+        saveSchedules(
+            schedules
+        );
+
+
+        showMessage(
+            "Schedule saved successfully."
+        );
+
+
+        document.getElementById(
+            "scheduleForm"
+        ).reset();
+
+
+        document.getElementById(
+            "scheduleActive"
+        ).value =
+            "true";
+
+
+        loadAllData();
+
+    }
+);
+
+
+/* =========================================================
+   RENDER SCHEDULES
+========================================================= */
+
+function renderScheduleList() {
+
+    const container =
+        document.getElementById(
+            "scheduleList"
+        );
+
+
+    const schedules =
+        getSchedules();
+
+
+    if (schedules.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No schedules created yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        schedules.map(
+            (schedule, index) => {
+
+                const start =
+                    formatDateTime(
+                        schedule.startDateTime
+                    );
+
+
+                const end =
+                    formatDateTime(
+                        schedule.endDateTime
+                    );
+
+
+                return `
+
+                    <div class="quiz-item">
+
+                        <h3>
+
+                            ${escapeHTML(
+                                schedule.quizName
+                            )}
+
+                        </h3>
+
+
+                        <div class="schedule-info">
+
+                            <strong>
+                                Start:
+                            </strong>
+
+                            ${start}
+
+                            <br><br>
+
+                            <strong>
+                                End:
+                            </strong>
+
+                            ${end}
+
+                            <br><br>
+
+                            <strong>
+                                Status:
+                            </strong>
+
+                            ${
+                                schedule.active
+                                    ? "ACTIVE"
+                                    : "INACTIVE"
+                            }
+
+                        </div>
+
+
+                        <div class="quiz-actions">
+
+                            <button
+                                class="btn"
+                                onclick="loadSchedule(
+                                    ${index}
+                                )">
+
+                                Edit
+
+                            </button>
+
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="deleteSchedule(
+                                    ${index}
+                                )">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   LOAD SCHEDULE FOR EDIT
+========================================================= */
+
+function loadSchedule(
+    index
+) {
+
+    const schedules =
+        getSchedules();
+
+
+    const schedule =
+        schedules[index];
+
+
+    if (!schedule) return;
+
+
+    document.getElementById(
+        "scheduleQuiz"
+    ).value =
+        schedule.quizName;
+
+
+    document.getElementById(
+        "startDateTime"
+    ).value =
+        schedule.startDateTime;
+
+
+    document.getElementById(
+        "endDateTime"
+    ).value =
+        schedule.endDateTime;
+
+
+    document.getElementById(
+        "scheduleActive"
+    ).value =
+        schedule.active
+            ? "true"
+            : "false";
+
+
+    document.getElementById(
+        "scheduleForm"
+    ).scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   DELETE SCHEDULE
+========================================================= */
+
+function deleteSchedule(
+    index
+) {
+
+    const confirmDelete =
+        confirm(
+            "Delete this schedule?"
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    let schedules =
+        getSchedules();
+
+
+    schedules.splice(
+        index,
+        1
+    );
+
+
+    saveSchedules(
+        schedules
+    );
+
+
+    showMessage(
+        "Schedule deleted successfully."
+    );
+
+
+    loadAllData();
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDateTime(
+    value
+) {
+
+    if (!value) {
+        return "-";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return value;
+
+    }
+
+
+    return date.toLocaleString();
+
+}
+
+
+/* =========================================================
+   HTML SECURITY
+========================================================= */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   JAVASCRIPT STRING SECURITY
+========================================================= */
+
+function escapeJS(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /\\/g,
+        "\\\\"
+    )
+    .replace(
+        /'/g,
+        "\\'"
+    )
+    .replace(
+        /"/g,
+        '\\"'
+    )
+    .replace(
+        /\n/g,
+        "\\n"
+    )
+    .replace(
+        /\r/g,
+        "\\r"
+    );
+
+}
+
+</script>
+
+</body>
+</html>

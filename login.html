@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Online Quiz | QUIZCORE</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ================================
+           QUIZ PAGE
+        ================================ */
+
+        .quiz-page {
+            min-height: 100vh;
+            padding: 100px 20px 40px;
+        }
+
+        .quiz-wrapper {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #00ffff;
+            border-radius: 12px;
+            background: rgba(0, 255, 255, 0.03);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.12);
+        }
+
+        .quiz-title h1 {
+            margin: 0 0 6px;
+            color: #00ffff;
+            font-size: 25px;
+        }
+
+        .quiz-title p {
+            margin: 4px 0;
+            color: #aaa;
+        }
+
+        .student-name {
+            color: white;
+            font-weight: bold;
+        }
+
+        .timer-box {
+            min-width: 130px;
+            text-align: center;
+            padding: 14px 20px;
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            color: #00ffff;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+        }
+
+        .timer-warning {
+            color: #ff4444 !important;
+            border-color: #ff4444 !important;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: #222;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #00ffff;
+            box-shadow: 0 0 12px #00ffff;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            padding: 30px;
+            background: #080808;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+        }
+
+        .question-number {
+            color: #00ffff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        #question {
+            color: white;
+            font-size: 22px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            width: 100%;
+            padding: 16px 18px;
+            text-align: left;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background: #111;
+            color: white;
+            cursor: pointer;
+            transition: 0.25s;
+            font-size: 16px;
+        }
+
+        .option:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
+        }
+
+        .option.selected {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.12);
+            color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            border: 1px solid #00ffff;
+            border-radius: 50%;
+            color: #00ffff;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .quiz-btn {
+            padding: 12px 25px;
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            background: transparent;
+            color: #00ffff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .quiz-btn:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 18px #00ffff;
+        }
+
+        .submit-btn {
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .submit-btn:hover {
+            background: #00ff88;
+            color: #000;
+            box-shadow: 0 0 18px #00ff88;
+        }
+
+        .question-navigator {
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #222;
+            border-radius: 12px;
+            background: #080808;
+        }
+
+        .navigator-title {
+            color: #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .question-nav {
+            width: 38px;
+            height: 38px;
+            border: 1px solid #333;
+            border-radius: 7px;
+            background: #111;
+            color: white;
+            cursor: pointer;
+        }
+
+        .question-nav:hover {
+            border-color: #00ffff;
+        }
+
+        .question-nav.active {
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .question-nav.answered {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: #00ffff;
+        }
+
+        /* Loading / error screen */
+
+        .message-box {
+            max-width: 650px;
+            margin: 120px auto;
+            padding: 35px;
+            text-align: center;
+            border: 1px solid #00ffff;
+            border-radius: 15px;
+            background: #080808;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+        }
+
+        .message-box h2 {
+            color: #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .message-box p {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .message-box a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .message-box a:hover {
+            background: #00ffff;
+            color: #000;
+        }
+
+        @media (max-width: 700px) {
+            .quiz-page {
+                padding: 80px 12px 30px;
+            }
+
+            .quiz-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .timer-box {
+                width: auto;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+
+            #question {
+                font-size: 18px;
+            }
+
+            .quiz-controls {
+                flex-wrap: wrap;
+            }
+
+            .quiz-btn {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="message-screen" class="message-box">
+    <h2 id="message-title">Checking Quiz...</h2>
+    <p id="message-text">Please wait...</p>
+</div>
+
+
+<div id="quiz-page" class="quiz-page" style="display:none;">
+
+    <div class="quiz-wrapper">
+
+        <!-- QUIZ HEADER -->
+        <div class="quiz-header">
+
+            <div class="quiz-title">
+                <h1 id="quiz-name">ONLINE QUIZ</h1>
+
+                <p>
+                    Student:
+                    <span id="student-name" class="student-name">---</span>
+                </p>
+
+                <p>
+                    Subject:
+                    <span id="subject-name">---</span>
+                </p>
+            </div>
+
+            <div id="timer" class="timer-box">
+                00:00
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+        <div class="progress-container">
+
+            <div class="progress-info">
+
+                <span>
+                    Question
+                    <span id="question-number">1</span>
+                    /
+                    <span id="total-questions">0</span>
+                </span>
+
+                <span id="answered-count">
+                    Answered: 0
+                </span>
+
+            </div>
+
+            <div class="progress-bar-bg">
+                <div id="progress-bar"></div>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION -->
+        <div class="question-card">
+
+            <div class="question-number">
+                Question <span id="current-question">1</span>
+            </div>
+
+            <div id="question">
+                Loading question...
+            </div>
+
+            <div id="options" class="options"></div>
+
+
+            <!-- CONTROLS -->
+            <div class="quiz-controls">
+
+                <button
+                    id="prev-btn"
+                    class="quiz-btn"
+                    onclick="previousQuestion()"
+                >
+                    ← Previous
+                </button>
+
+                <button
+                    id="next-btn"
+                    class="quiz-btn"
+                    onclick="nextQuestion()"
+                >
+                    Next →
+                </button>
+
+                <button
+                    id="submit-btn"
+                    class="quiz-btn submit-btn"
+                    onclick="submitQuiz()"
+                >
+                    Submit Quiz
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION NAVIGATOR -->
+        <div class="question-navigator">
+
+            <div class="navigator-title">
+                Question Navigator
+            </div>
+
+            <div
+                id="question-navigator"
+                class="nav-buttons"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* ==================================================
+       GLOBAL VARIABLES
+    ================================================== */
+
+    let student = null;
+    let selectedQuiz = null;
+    let selectedSchedule = null;
+
+    let questions = [];
+    let currentQuestionIndex = 0;
+
+    let userAnswers = [];
+
+    let timerInterval = null;
+    let remainingSeconds = 0;
+
+    let quizStarted = false;
+    let startTime = null;
+
+    /* Anti-cheating variables (Set limit to 2 warnings) */
+    let warningCount = 0;
+    const maxWarnings = 2;
+
+
+    /* ==================================================
+       ANTI-CHEATING & QUIZ SECURITY FEATURES
+    ================================================== */
+
+    function requestFullScreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().catch(err => {
+                console.log("Full-screen request blocked or failed:", err);
+            });
+        }
+    }
+
+    // Detect Tab Switching / Focus Loss
+    window.addEventListener("blur", function () {
+        if (quizStarted) {
+            warningCount++;
+            if (warningCount >= maxWarnings) {
+                alert("⚠️ Final Warning: Aapne 2 baar tab switch kiya hai! Aapka quiz automatically submit ho raha hai.");
+                submitQuiz(true);
+            } else {
+                alert(`⚠️ Cheating Warning (${warningCount}/${maxWarnings}): Kripya dusre tab ya window par na jayein! Agli baar tab switch karne par quiz submit ho jayegi.`);
+            }
+        }
+    });
+
+    // Detect Fullscreen Exit
+    document.addEventListener("fullscreenchange", function () {
+        if (!document.fullscreenElement && quizStarted) {
+            alert("⚠️ Warning: Aapne full-screen mode exit kar diya hai! Kripya dobara full-screen mode enable karein.");
+            requestFullScreen();
+        }
+    });
+
+    // Disable Right-Click and Copy-Paste
+    document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+        alert("Right-click is disabled during the quiz.");
+    });
+
+    document.addEventListener("copy", function (e) {
+        e.preventDefault();
+        alert("Copying questions is strictly prohibited.");
+    });
+
+
+    /* ==================================================
+       PAGE LOAD
+    ================================================== */
+
+    document.addEventListener("DOMContentLoaded", function () {
+        checkLogin();
+    });
+
+
+    /* ==================================================
+       LOGIN CHECK
+    ================================================== */
+
+    function checkLogin() {
+        const loggedIn = localStorage.getItem("quizLoggedIn");
+
+        if (loggedIn !== "true") {
+            showMessage(
+                "Login Required",
+                "Please login before starting the quiz.",
+                "login.html"
+            );
+            return;
+        }
+
+        student = JSON.parse(localStorage.getItem("quizStudent"));
+
+        if (!student) {
+            showMessage(
+                "Student Data Missing",
+                "Please register/login again.",
+                "register.html"
+            );
+            return;
+        }
+
+        loadQuiz();
+    }
+
+
+    /* ==================================================
+       LOAD QUIZ
+    ================================================== */
+
+    function loadQuiz() {
+        const quizzes = JSON.parse(localStorage.getItem("quizzes") || "[]");
+
+        selectedQuiz = quizzes.find(function (quiz) {
+            return quiz.name === student.quizSet;
+        });
+
+        if (!selectedQuiz && student.quizSet) {
+            selectedQuiz = quizzes.find(function (quiz) {
+                return quiz.name === "Set " + student.quizSet;
+            });
+        }
+
+        if (!selectedQuiz) {
+            const activeQuizzes = quizzes.filter(function (quiz) {
+                return quiz.active === true;
+            });
+
+            if (activeQuizzes.length === 1) {
+                selectedQuiz = activeQuizzes[0];
+            }
+        }
+
+        if (!selectedQuiz) {
+            showMessage(
+                "Quiz Not Configured",
+                "No valid active quiz was found for your account. Please contact the administrator.",
+                "index.html"
+            );
+            return;
+        }
+
+        if (selectedQuiz.active !== true) {
+            showMessage(
+                "Quiz Inactive",
+                "This quiz is currently inactive. Please contact the administrator.",
+                "index.html"
+            );
+            return;
+        }
+
+        checkSchedule();
+    }
+
+
+    /* ==================================================
+       SCHEDULE CHECK
+    ================================================== */
+
+    function checkSchedule() {
+        const schedules = JSON.parse(localStorage.getItem("quizSchedules") || "[]");
+        const now = new Date();
+
+        selectedSchedule = schedules.find(function (schedule) {
+            return schedule.quizName === selectedQuiz.name && schedule.active === true;
+        });
+
+        if (!selectedSchedule) {
+            showMessage(
+                "Quiz Not Scheduled",
+                "This quiz has not been scheduled by the administrator yet.",
+                "index.html"
+            );
+            return;
+        }
+
+        const start = new Date(selectedSchedule.startDate);
+        const end = new Date(selectedSchedule.endDate);
+
+        if (now < start) {
+            showMessage(
+                "Quiz Not Started",
+                "The quiz will be available from " + formatDateTime(start) + ".",
+                "index.html"
+            );
+            return;
+        }
+
+        if (now > end) {
+            showMessage(
+                "Quiz Expired",
+                "The scheduled quiz time has ended.",
+                "index.html"
+            );
+            return;
+        }
+
+        loadQuestions();
+    }
+
+
+    /* ==================================================
+       LOAD QUESTIONS
+    ================================================== */
+
+    function loadQuestions() {
+        const allQuestions = JSON.parse(localStorage.getItem("questions") || "[]");
+
+        const quizQuestions = allQuestions.filter(function (q) {
+            return q.quizName === selectedQuiz.name;
+        });
+
+        if (quizQuestions.length === 0) {
+            showMessage(
+                "Questions Not Available",
+                "No questions have been added to this quiz yet.",
+                "index.html"
+            );
+            return;
+        }
+
+        const easy = quizQuestions.filter(function (q) {
+            return String(q.difficulty).toLowerCase() === "easy";
+        });
+
+        const medium = quizQuestions.filter(function (q) {
+            return String(q.difficulty).toLowerCase() === "medium";
+        });
+
+        const hard = quizQuestions.filter(function (q) {
+            return String(q.difficulty).toLowerCase() === "hard";
+        });
+
+        const easyCount = Number(selectedQuiz.easyQuestions) || Math.floor(Number(selectedQuiz.totalQuestions) / 3);
+        const mediumCount = Number(selectedQuiz.mediumQuestions) || Math.floor(Number(selectedQuiz.totalQuestions) / 3);
+        const hardCount = Number(selectedQuiz.hardQuestions) || Math.floor(Number(selectedQuiz.totalQuestions) / 3);
+
+        if (
+            easy.length < easyCount ||
+            medium.length < mediumCount ||
+            hard.length < hardCount
+        ) {
+            showMessage(
+                "Questions Incomplete",
+                "The administrator has not added enough questions for this quiz.",
+                "index.html"
+            );
+            return;
+        }
+
+        shuffleArray(easy);
+        shuffleArray(medium);
+        shuffleArray(hard);
+
+        questions = [
+            ...easy.slice(0, easyCount),
+            ...medium.slice(0, mediumCount),
+            ...hard.slice(0, hardCount)
+        ];
+
+        const totalQuestions = Number(selectedQuiz.totalQuestions);
+
+        if (questions.length !== totalQuestions) {
+            showMessage(
+                "Quiz Configuration Error",
+                "The number of available questions does not match the quiz configuration.",
+                "index.html"
+            );
+            return;
+        }
+
+        userAnswers = new Array(questions.length).fill(null);
+
+        initializeQuiz();
+    }
+
+
+    /* ==================================================
+       INITIALIZE QUIZ
+    ================================================== */
+
+    function initializeQuiz() {
+        document.getElementById("message-screen").style.display = "none";
+        document.getElementById("quiz-page").style.display = "block";
+
+        document.getElementById("quiz-name").textContent = selectedQuiz.name;
+        document.getElementById("student-name").textContent = student.name || "---";
+        document.getElementById("subject-name").textContent =
+            selectedQuiz.subject || student.subject || "---";
+
+        document.getElementById("total-questions").textContent = questions.length;
+
+        const duration =
+            Number(selectedSchedule.duration) ||
+            Number(selectedQuiz.duration) ||
+            30;
+
+        remainingSeconds = duration * 60;
+        startTime = new Date();
+        quizStarted = true;
+
+        // Trigger Full Screen & Security
+        requestFullScreen();
+
+        createQuestionNavigator();
+        showQuestion();
+        startTimer();
+    }
+
+
+    /* ==================================================
+       SHOW QUESTION
+    ================================================== */
+
+    function showQuestion() {
+        if (!questions.length) return;
+
+        const q = questions[currentQuestionIndex];
+
+        document.getElementById("question-number").textContent = currentQuestionIndex + 1;
+        document.getElementById("current-question").textContent = currentQuestionIndex + 1;
+        document.getElementById("question").textContent = q.question;
+
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+
+        const optionKeys = ["A", "B", "C", "D"];
+
+        optionKeys.forEach(function (key) {
+            const optionButton = document.createElement("button");
+            optionButton.className = "option";
+
+            if (userAnswers[currentQuestionIndex] === key) {
+                optionButton.classList.add("selected");
+            }
+
+            const label = document.createElement("span");
+            label.className = "option-label";
+            label.textContent = key;
+
+            const text = document.createTextNode(q.options[key] || "");
+
+            optionButton.appendChild(label);
+            optionButton.appendChild(text);
+
+            optionButton.onclick = function () {
+                selectAnswer(key);
+            };
+
+            optionsContainer.appendChild(optionButton);
+        });
+
+        updateProgress();
+        updateQuestionNavigator();
+        updateButtons();
+    }
+
+
+    /* ==================================================
+       SELECT ANSWER
+    ================================================== */
+
+    function selectAnswer(answer) {
+        userAnswers[currentQuestionIndex] = answer;
+        showQuestion();
+    }
+
+
+    /* ==================================================
+       NEXT QUESTION
+    ================================================== */
+
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+    }
+
+
+    /* ==================================================
+       PREVIOUS QUESTION
+    ================================================== */
+
+    function previousQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion();
+        }
+    }
+
+
+    /* ==================================================
+       QUESTION NAVIGATOR
+    ================================================== */
+
+    function createQuestionNavigator() {
+        const container = document.getElementById("question-navigator");
+        container.innerHTML = "";
+
+        questions.forEach(function (_, index) {
+            const button = document.createElement("button");
+            button.className = "question-nav";
+            button.textContent = index + 1;
+
+            button.onclick = function () {
+                currentQuestionIndex = index;
+                showQuestion();
+            };
+
+            container.appendChild(button);
+        });
+    }
+
+    function updateQuestionNavigator() {
+        const buttons = document.querySelectorAll(".question-nav");
+
+        buttons.forEach(function (button, index) {
+            button.classList.remove("active", "answered");
+
+            if (index === currentQuestionIndex) {
+                button.classList.add("active");
+            }
+
+            if (userAnswers[index] !== null) {
+                button.classList.add("answered");
+            }
+        });
+    }
+
+
+    /* ==================================================
+       PROGRESS
+    ================================================== */
+
+    function updateProgress() {
+        const answered = userAnswers.filter(function (answer) {
+            return answer !== null;
+        }).length;
+
+        document.getElementById("answered-count").textContent = "Answered: " + answered;
+
+        const percentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+        document.getElementById("progress-bar").style.width = percentage + "%";
+    }
+
+
+    /* ==================================================
+       BUTTONS
+    ================================================== */
+
+    function updateButtons() {
+        const previous = document.getElementById("prev-btn");
+        const next = document.getElementById("next-btn");
+        const submit = document.getElementById("submit-btn");
+
+        previous.disabled = currentQuestionIndex === 0;
+
+        if (currentQuestionIndex === questions.length - 1) {
+            next.style.display = "none";
+        } else {
+            next.style.display = "inline-block";
+        }
+
+        submit.style.display = "inline-block";
+    }
+
+
+    /* ==================================================
+       TIMER
+    ================================================== */
+
+    function startTimer() {
+        updateTimerDisplay();
+
+        timerInterval = setInterval(function () {
+            remainingSeconds--;
+            updateTimerDisplay();
+
+            if (remainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                alert("Time is over. Your quiz will be submitted automatically.");
+                submitQuiz(true);
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const timer = document.getElementById("timer");
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+
+        timer.textContent =
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0");
+
+        if (remainingSeconds <= 60) {
+            timer.classList.add("timer-warning");
+        } else {
+            timer.classList.remove("timer-warning");
+        }
+    }
+
+
+    /* ==================================================
+       SUBMIT QUIZ
+    ================================================== */
+
+    function submitQuiz(autoSubmit = false) {
+        if (!quizStarted) return;
+
+        if (!autoSubmit) {
+            const confirmSubmit = confirm("Are you sure you want to submit the quiz?");
+            if (!confirmSubmit) {
+                return;
+            }
+        }
+
+        quizStarted = false;
+
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+
+        let correct = 0;
+
+        questions.forEach(function (q, index) {
+            if (userAnswers[index] === q.correctAnswer) {
+                correct++;
+            }
+        });
+
+        const totalQuestions = questions.length;
+        const marksPerQuestion = Number(selectedQuiz.marks) || 1;
+        const totalMarks = totalQuestions * marksPerQuestion;
+        const score = correct * marksPerQuestion;
+        const wrong = totalQuestions - correct;
+        const percentage = totalMarks > 0 ? (score / totalMarks) * 100 : 0;
+
+        const status = percentage >= 40 ? "PASS" : "FAIL";
+        const submitTime = new Date();
+
+        const result = {
+            studentName: student.name || "",
+            rollNo: student.rollNo || "",
+            email: student.email || "",
+            branch: student.branch || "",
+            course: student.course || "",
+            subject: selectedQuiz.subject || student.subject || "",
+            section: student.section || "",
+
+            quizName: selectedQuiz.name || "Quiz",
+
+            totalQuestions: totalQuestions,
+            totalMarks: totalMarks,
+
+            correct: correct,
+            wrong: wrong,
+
+            score: score,
+
+            percentage: Number(percentage.toFixed(2)),
+
+            status: status,
+
+            attemptDate: submitTime.toLocaleDateString(),
+
+            startTime: startTime ? startTime.toLocaleString() : "",
+            submitTime: submitTime.toLocaleString()
+        };
+
+        try {
+            localStorage.setItem("quizResult", JSON.stringify(result));
+
+            let allResults = JSON.parse(localStorage.getItem("allResults") || "[]");
+
+            allResults = allResults.filter(function (item) {
+                return !(
+                    item.email === result.email &&
+                    item.quizName === result.quizName
+                );
+            });
+
+            allResults.push(result);
+
+            localStorage.setItem("allResults", JSON.stringify(allResults));
+
+            const savedResult = localStorage.getItem("quizResult");
+
+            if (!savedResult) {
+                throw new Error("Result was not saved.");
+            }
+
+            window.location.href = "result.html";
+
+        } catch (error) {
+            console.error("Result Save Error:", error);
+            alert("Result save nahi ho pa raha.\nPlease run the project using Live Server.");
+            quizStarted = true;
+        }
+    }
+
+
+    /* ==================================================
+       MESSAGE
+    ================================================== */
+
+    function showMessage(title, message, link) {
+        document.getElementById("quiz-page").style.display = "none";
+        document.getElementById("message-screen").style.display = "block";
+
+        document.getElementById("message-title").textContent = title;
+        document.getElementById("message-text").innerHTML =
+            message +
+            "<br><br>" +
+            '<a href="' + link + '">GO BACK</a>';
+    }
+
+
+    /* ==================================================
+       UTILITIES
+    ================================================== */
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function formatDateTime(date) {
+        return date.toLocaleString("en-IN", {
+            dateStyle: "medium",
+            timeStyle: "short"
+        });
+    }
+
+
+    /* ==================================================
+       PREVENT ACCIDENTAL PAGE LEAVE
+    ================================================== */
+
+    window.addEventListener("beforeunload", function (event) {
+        if (quizStarted) {
+            event.preventDefault();
+            event.returnValue = "";
+        }
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quiz Result | QUIZCORE</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #050505;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .result-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+            box-sizing: border-box;
+        }
+
+        .result-box {
+            width: 100%;
+            max-width: 850px;
+            background: #090909;
+            border: 1px solid #00f6ff;
+            border-radius: 18px;
+            padding: 35px;
+            box-sizing: border-box;
+            box-shadow:
+                0 0 25px rgba(0,246,255,.25),
+                inset 0 0 20px rgba(0,246,255,.04);
+        }
+
+        .result-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-title h1 {
+            color: #00f6ff;
+            font-size: 32px;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .result-title p {
+            color: #888;
+            margin: 0;
+        }
+
+        .student-name {
+            text-align: center;
+            color: white;
+            font-size: 22px;
+            margin-bottom: 25px;
+        }
+
+        .student-name span {
+            color: #00f6ff;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .result-card {
+            padding: 20px;
+            text-align: center;
+            background: #050505;
+            border: 1px solid #222;
+            border-radius: 10px;
+        }
+
+        .result-card h3 {
+            margin: 0 0 10px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .result-card p {
+            margin: 0;
+            color: #00f6ff;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .status {
+            text-align: center;
+            margin: 30px 0;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .pass {
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            background: rgba(0,255,136,.08);
+            box-shadow: 0 0 15px rgba(0,255,136,.2);
+        }
+
+        .fail {
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            background: rgba(255,77,77,.08);
+            box-shadow: 0 0 15px rgba(255,77,77,.2);
+        }
+
+        .date {
+            text-align: center;
+            color: #999;
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 13px 22px;
+            border: 1px solid #00f6ff;
+            border-radius: 8px;
+            background: transparent;
+            color: #00f6ff;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            transition: .3s;
+        }
+
+        .btn:hover {
+            background: #00f6ff;
+            color: #000;
+            box-shadow: 0 0 15px #00f6ff;
+        }
+
+        .certificate-btn {
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .certificate-btn:hover {
+            background: #00ff88;
+            color: #000;
+            box-shadow: 0 0 15px #00ff88;
+        }
+
+        @media(max-width:650px) {
+            .result-box {
+                padding: 22px;
+            }
+            .result-title h1 {
+                font-size: 25px;
+            }
+            .result-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .result-card p {
+                font-size: 21px;
+            }
+        }
+
+        @media(max-width:400px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="result-page">
+
+    <div class="result-box">
+
+        <!-- TITLE -->
+        <div class="result-title">
+            <h1>QUIZ RESULT</h1>
+            <p>QUIZCORE ONLINE QUIZ SYSTEM</p>
+        </div>
+
+        <!-- STUDENT -->
+        <div class="student-name">
+            Student:
+            <span id="studentName">Student</span>
+        </div>
+
+        <!-- RESULT DATA -->
+        <div class="result-grid">
+            <div class="result-card">
+                <h3>TOTAL QUESTIONS</h3>
+                <p id="totalQuestions">0</p>
+            </div>
+
+            <div class="result-card">
+                <h3>CORRECT</h3>
+                <p id="correct">0</p>
+            </div>
+
+            <div class="result-card">
+                <h3>WRONG</h3>
+                <p id="wrong">0</p>
+            </div>
+
+            <div class="result-card">
+                <h3>SCORE</h3>
+                <p id="score">0</p>
+            </div>
+
+            <div class="result-card">
+                <h3>PERCENTAGE</h3>
+                <p id="percentage">0%</p>
+            </div>
+
+            <div class="result-card">
+                <h3>RANK</h3>
+                <p id="rank">--</p>
+            </div>
+        </div>
+
+        <!-- PASS / FAIL -->
+        <div id="status" class="status">
+            RESULT
+        </div>
+
+        <!-- DATE -->
+        <div class="date">
+            Attempt Date:
+            <span id="attemptDate"></span>
+        </div>
+
+        <!-- BUTTONS (Fixed extra tags and duplicate buttons) -->
+        <div class="buttons">
+            <button class="btn" onclick="downloadResult()">
+                DOWNLOAD RESULT PDF
+            </button>
+
+            <button
+                id="certificateBtn"
+                class="btn certificate-btn"
+                onclick="goCertificate()"
+                style="display:none;">
+                VIEW CERTIFICATE
+            </button>
+
+            <a href="index.html" class="btn">
+                HOME
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+const studentData = localStorage.getItem("quizStudent");
+const resultData = localStorage.getItem("quizResult");
+
+if (!studentData || !resultData) {
+    alert("Result data not found.");
+    window.location.href = "index.html";
+} else {
+    const student = JSON.parse(studentData);
+    const result = JSON.parse(resultData);
+
+    document.getElementById("studentName").textContent =
+        result.studentName || student.name || "Student";
+
+    const totalQuestions = Number(result.totalQuestions || result.total || 0);
+    const correct = Number(result.correct || 0);
+    const wrong = Number(result.wrong || 0);
+    const score = Number(result.score || 0);
+    const percentage = Number(result.percentage || 0);
+
+    document.getElementById("totalQuestions").textContent = totalQuestions;
+    document.getElementById("correct").textContent = correct;
+    document.getElementById("wrong").textContent = wrong;
+    document.getElementById("score").textContent = score;
+    document.getElementById("percentage").textContent = percentage.toFixed(2) + "%";
+
+    const allResults = JSON.parse(localStorage.getItem("allResults") || "[]");
+    const quizName = result.quizName || "";
+
+    const quizResults = allResults.filter(function(item) {
+        return item.quizName === quizName;
+    });
+
+    quizResults.sort(function(a, b) {
+        const scoreA = Number(a.score || 0);
+        const scoreB = Number(b.score || 0);
+        if (scoreB !== scoreA) {
+            return scoreB - scoreA;
+        }
+        const percentageA = Number(a.percentage || 0);
+        const percentageB = Number(b.percentage || 0);
+        return percentageB - percentageA;
+    });
+
+    let rank = "--";
+    for (let i = 0; i < quizResults.length; i++) {
+        const item = quizResults[i];
+        if (item.email === result.email && item.quizName === result.quizName) {
+            rank = i + 1;
+            if (i > 0) {
+                const previous = quizResults[i - 1];
+                if (
+                    Number(previous.score || 0) === Number(item.score || 0) &&
+                    Number(previous.percentage || 0) === Number(item.percentage || 0)
+                ) {
+                    for (let j = 0; j < i; j++) {
+                        if (
+                            Number(quizResults[j].score || 0) === Number(item.score || 0) &&
+                            Number(quizResults[j].percentage || 0) === Number(item.percentage || 0)
+                        ) {
+                            rank = j + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    document.getElementById("rank").textContent = rank;
+
+    document.getElementById("attemptDate").textContent =
+        result.attemptDate || result.date || new Date().toLocaleDateString();
+
+    const status = document.getElementById("status");
+    const certificateBtn = document.getElementById("certificateBtn");
+
+    if (String(result.status).toUpperCase() === "PASS" || percentage >= 40) {
+        status.textContent = "PASS";
+        status.classList.add("pass");
+        certificateBtn.style.display = "inline-block";
+    } else {
+        status.textContent = "FAIL";
+        status.classList.add("fail");
+        certificateBtn.style.display = "none";
+    }
+}
+
+function goCertificate() {
+    window.location.href = "certificate.html";
+}
+
+function downloadResult() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const student = JSON.parse(localStorage.getItem("quizStudent"));
+    const result = JSON.parse(localStorage.getItem("quizResult"));
+    const rank = document.getElementById("rank").textContent;
+
+    const totalQuestions = Number(result.totalQuestions || result.total || 0);
+    const correct = Number(result.correct || 0);
+    const wrong = Number(result.wrong || 0);
+    const score = Number(result.score || 0);
+    const percentage = Number(result.percentage || 0);
+
+    doc.setFontSize(22);
+    doc.setTextColor(0, 180, 200);
+    doc.text("QUIZCORE", 105, 25, { align: "center" });
+
+    doc.setFontSize(18);
+    doc.setTextColor(0, 0, 0);
+    doc.text("ONLINE QUIZ RESULT", 105, 38, { align: "center" });
+    doc.line(20, 45, 190, 45);
+
+    doc.setFontSize(12);
+    let y = 60;
+    doc.text("Student Name: " + (result.studentName || student.name || ""), 25, y);
+    y += 12;
+    doc.text("Roll Number: " + (result.rollNo || student.rollNo || ""), 25, y);
+    y += 12;
+    doc.text("Course: " + (result.course || student.course || ""), 25, y);
+    y += 12;
+    doc.text("Subject: " + (result.subject || student.subject || ""), 25, y);
+    y += 18;
+
+    doc.text("Total Questions: " + totalQuestions, 25, y);
+    y += 12;
+    doc.text("Correct Answers: " + correct, 25, y);
+    y += 12;
+    doc.text("Wrong Answers: " + wrong, 25, y);
+    y += 12;
+    doc.text("Score: " + score, 25, y);
+    y += 12;
+    doc.text("Percentage: " + percentage.toFixed(2) + "%", 25, y);
+    y += 12;
+    doc.text("Result: " + (percentage >= 40 ? "PASS" : "FAIL"), 25, y);
+    y += 12;
+    doc.text("Rank: " + rank, 25, y);
+    y += 12;
+    doc.text("Date: " + (result.attemptDate || result.date || new Date().toLocaleDateString()), 25, y);
+
+    doc.setFontSize(10);
+    doc.text("Generated by QUIZCORE Online Quiz System", 105, 280, { align: "center" });
+
+    const safeName = (result.studentName || student.name || "Student").replace(/[^a-z0-9]/gi, "_");
+    doc.save("Quiz_Result_" + safeName + ".pdf");
+}
+</script>
+</body>
+</html>

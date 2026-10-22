@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Students | QUIZCORE Admin</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(0, 246, 255, 0.12),
+                    transparent 30%
+                ),
+                #030606;
+
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        /* =========================
+           LAYOUT
+        ========================== */
+
+        .dashboard {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================== */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+
+            position: fixed;
+            left: 0;
+            top: 0;
+
+            background: #050909;
+            border-right: 1px solid #00f6ff;
+
+            box-shadow:
+                0 0 20px rgba(0, 246, 255, 0.15);
+
+            padding: 25px 15px;
+
+            z-index: 100;
+        }
+
+        .logo {
+            text-align: center;
+
+            color: #00f6ff;
+            font-size: 24px;
+            font-weight: bold;
+
+            letter-spacing: 4px;
+
+            text-shadow:
+                0 0 10px #00f6ff;
+
+            margin-bottom: 40px;
+        }
+
+        .admin-label {
+            text-align: center;
+
+            color: #777;
+            font-size: 12px;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 20px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu a {
+            text-decoration: none;
+
+            color: #aaa;
+
+            padding: 13px 15px;
+
+            border: 1px solid transparent;
+            border-radius: 7px;
+
+            transition: 0.3s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            color: #00f6ff;
+
+            border-color: #00f6ff;
+
+            background:
+                rgba(0, 246, 255, 0.06);
+
+            box-shadow:
+                0 0 12px
+                rgba(0, 246, 255, 0.2);
+        }
+
+        .logout {
+            margin-top: 40px;
+
+            width: 100%;
+
+            padding: 12px;
+
+            background: transparent;
+
+            border: 1px solid #ff4d4d;
+
+            color: #ff4d4d;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .logout:hover {
+            background: #ff4d4d;
+
+            color: #000;
+
+            box-shadow:
+                0 0 15px #ff4d4d;
+        }
+
+        /* =========================
+           MAIN
+        ========================== */
+
+        .main {
+            margin-left: 250px;
+
+            width: calc(100% - 250px);
+
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+
+            padding-bottom: 20px;
+
+            border-bottom: 1px solid #172525;
+        }
+
+        .topbar h1 {
+            margin: 0;
+
+            color: #00f6ff;
+
+            font-size: 28px;
+
+            text-shadow:
+                0 0 10px
+                rgba(0, 246, 255, 0.5);
+        }
+
+        .topbar p {
+            margin: 6px 0 0;
+
+            color: #777;
+        }
+
+        .admin-name {
+            padding: 10px 16px;
+
+            border: 1px solid #00f6ff;
+
+            color: #00f6ff;
+
+            border-radius: 7px;
+        }
+
+        /* =========================
+           SEARCH / ACTION
+        ========================== */
+
+        .toolbar {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+
+            max-width: 500px;
+        }
+
+        .search-box input {
+            width: 100%;
+
+            padding: 13px 15px;
+
+            background: #080d0d;
+
+            border: 1px solid #243333;
+
+            border-radius: 8px;
+
+            color: white;
+
+            outline: none;
+
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            border-color: #00f6ff;
+
+            box-shadow:
+                0 0 12px
+                rgba(0, 246, 255, 0.2);
+        }
+
+        .add-btn {
+            padding: 13px 20px;
+
+            background: transparent;
+
+            border: 1px solid #00f6ff;
+
+            border-radius: 8px;
+
+            color: #00f6ff;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #00f6ff;
+
+            color: #000;
+
+            box-shadow:
+                0 0 15px #00f6ff;
+        }
+
+        /* =========================
+           STUDENT COUNT
+        ========================== */
+
+        .student-count {
+            margin-bottom: 15px;
+
+            color: #888;
+
+            font-size: 14px;
+        }
+
+        .student-count span {
+            color: #00f6ff;
+
+            font-weight: bold;
+        }
+
+        /* =========================
+           TABLE
+        ========================== */
+
+        .table-container {
+            width: 100%;
+
+            overflow-x: auto;
+
+            background: #080d0d;
+
+            border: 1px solid #172525;
+
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+
+            min-width: 1100px;
+
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0c1717;
+
+            color: #00f6ff;
+
+            padding: 15px;
+
+            text-align: left;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 15px;
+
+            border-top: 1px solid #172020;
+
+            color: #ccc;
+
+            font-size: 14px;
+        }
+
+        tr:hover td {
+            background:
+                rgba(0, 246, 255, 0.03);
+        }
+
+        /* =========================
+           STATUS
+        ========================== */
+
+        .pass {
+            color: #00ff88;
+
+            font-weight: bold;
+        }
+
+        .fail {
+            color: #ff4d4d;
+
+            font-weight: bold;
+        }
+
+        .not-attended {
+            color: #ffaa00;
+
+            font-weight: bold;
+        }
+
+        .rank {
+            color: #00f6ff;
+
+            font-weight: bold;
+        }
+
+        /* =========================
+           VIEW BUTTON
+        ========================== */
+
+        .view-btn {
+            padding: 7px 12px;
+
+            background: transparent;
+
+            border: 1px solid #00f6ff;
+
+            border-radius: 5px;
+
+            color: #00f6ff;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .view-btn:hover {
+            background: #00f6ff;
+
+            color: #000;
+        }
+
+        /* =========================
+           EMPTY
+        ========================== */
+
+        .empty {
+            text-align: center;
+
+            padding: 40px;
+
+            color: #666;
+        }
+
+        /* =========================
+           MODAL
+        ========================== */
+
+        .modal {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0, 0, 0, 0.8);
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+
+            z-index: 500;
+        }
+
+        .modal-box {
+            width: 100%;
+
+            max-width: 550px;
+
+            background: #080d0d;
+
+            border: 1px solid #00f6ff;
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 0 30px
+                rgba(0, 246, 255, 0.3);
+        }
+
+        .modal-title {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .modal-title h2 {
+            margin: 0;
+
+            color: #00f6ff;
+        }
+
+        .close-btn {
+            background: transparent;
+
+            border: none;
+
+            color: #ff4d4d;
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+        .details {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .detail {
+            padding: 14px;
+
+            background: #050909;
+
+            border: 1px solid #172525;
+
+            border-radius: 7px;
+        }
+
+        .detail label {
+            display: block;
+
+            color: #777;
+
+            font-size: 12px;
+
+            margin-bottom: 6px;
+        }
+
+        .detail span {
+            color: #00f6ff;
+
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 100%;
+
+                min-height: auto;
+
+                position: relative;
+
+                border-right: none;
+
+                border-bottom: 1px solid #00f6ff;
+            }
+
+            .dashboard {
+                display: block;
+            }
+
+            .main {
+                margin-left: 0;
+
+                width: 100%;
+
+                padding: 20px 15px;
+            }
+
+            .menu {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .logout {
+                margin-top: 15px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .topbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            QUIZCORE
+        </div>
+
+        <div class="admin-label">
+            ADMIN PANEL
+        </div>
+
+        <nav class="menu">
+
+            <a href="admin-dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="admin-students.html"
+               class="active">
+                👨‍🎓 Students
+            </a>
+
+            <a href="admin-quizzes.html">
+                📝 Quizzes
+            </a>
+
+            <a href="admin-questions.html">
+                ❓ Questions
+            </a>
+
+            <a href="admin-results.html">
+                📊 Results
+            </a>
+
+            <a href="admin-schedule.html">
+                📅 Schedule
+            </a>
+
+        </nav>
+
+        <button
+            class="logout"
+            onclick="logout()">
+
+            LOGOUT
+
+        </button>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>
+                    STUDENT MANAGEMENT
+                </h1>
+
+                <p>
+                    View and manage registered students
+                </p>
+
+            </div>
+
+            <div class="admin-name">
+                👤 ADMIN
+            </div>
+
+        </div>
+
+
+        <!-- TOOLBAR -->
+
+        <div class="toolbar">
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search by name, roll number or email..."
+                    onkeyup="searchStudents()">
+
+            </div>
+
+            <a
+                href="register.html"
+                class="add-btn">
+
+                + ADD STUDENT
+
+            </a>
+
+        </div>
+
+
+        <!-- COUNT -->
+
+        <div class="student-count">
+
+            Total Students:
+            <span id="studentCount">0</span>
+
+        </div>
+
+
+        <!-- STUDENT TABLE -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>STUDENT NAME</th>
+
+                        <th>ROLL NO.</th>
+
+                        <th>EMAIL</th>
+
+                        <th>COURSE</th>
+
+                        <th>BRANCH</th>
+
+                        <th>QUIZ</th>
+
+                        <th>SCORE</th>
+
+                        <th>PERCENTAGE</th>
+
+                        <th>RANK</th>
+
+                        <th>STATUS</th>
+
+                        <th>ACTION</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="studentTable">
+
+                    <!-- Javascript will load students -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================
+     STUDENT DETAILS MODAL
+========================== -->
+
+<div
+    class="modal"
+    id="studentModal">
+
+    <div class="modal-box">
+
+        <div class="modal-title">
+
+            <h2>
+                STUDENT DETAILS
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="details">
+
+            <div class="detail">
+
+                <label>
+                    STUDENT NAME
+                </label>
+
+                <span id="detailName">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    ROLL NUMBER
+                </label>
+
+                <span id="detailRoll">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    EMAIL
+                </label>
+
+                <span id="detailEmail">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    BRANCH
+                </label>
+
+                <span id="detailBranch">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    COURSE
+                </label>
+
+                <span id="detailCourse">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    SUBJECT
+                </label>
+
+                <span id="detailSubject">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    SECTION
+                </label>
+
+                <span id="detailSection">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    QUIZ SET
+                </label>
+
+                <span id="detailQuiz">
+                    --
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <label>
+                    REGISTERED DATE
+                </label>
+
+                <span id="detailDate">
+                    --
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       ADMIN LOGIN CHECK
+    ========================== */
+
+    const adminLoggedIn =
+        localStorage.getItem("adminLoggedIn");
+
+    if (adminLoggedIn !== "true") {
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+
+    /* =========================
+       LOAD STUDENTS
+    ========================== */
+
+    let students = [];
+
+    function loadStudents() {
+
+        /*
+            Registration page currently
+            stores one student as quizStudent.
+
+            This code also supports an
+            "students" array when you later
+            connect the backend.
+        */
+
+        const savedStudents =
+            JSON.parse(
+                localStorage.getItem("students") || "[]"
+            );
+
+
+        const currentStudent =
+            JSON.parse(
+                localStorage.getItem("quizStudent") || "null"
+            );
+
+
+        students = savedStudents;
+
+
+        /*
+            If quizStudent exists and is not
+            already inside students, add it
+            for frontend demo.
+        */
+
+        if (currentStudent) {
+
+            const exists =
+                students.some(function(student) {
+
+                    return student.email ===
+                        currentStudent.email;
+
+                });
+
+
+            if (!exists) {
+
+                students.push(currentStudent);
+
+            }
+
+        }
+
+
+        displayStudents(students);
+
+    }
+
+
+    /* =========================
+       DISPLAY STUDENTS
+    ========================== */
+
+    function displayStudents(list) {
+
+        const table =
+            document.getElementById(
+                "studentTable"
+            );
+
+
+        const count =
+            document.getElementById(
+                "studentCount"
+            );
+
+
+        count.textContent =
+            list.length;
+
+
+        table.innerHTML = "";
+
+
+        if (list.length === 0) {
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="12"
+                        class="empty">
+
+                        No registered students found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        list.forEach(function(student, index) {
+
+            const result =
+                findStudentResult(student);
+
+
+            let score = "--";
+            let percentage = "--";
+            let rank = "--";
+            let status = "NOT ATTENDED";
+            let statusClass = "not-attended";
+
+
+            if (result) {
+
+                score =
+                    result.score ||
+                    (
+                        (result.correct || 0)
+                        + " / "
+                        + (result.total || 0)
+                    );
+
+
+                percentage =
+                    Number(
+                        result.percentage || 0
+                    ).toFixed(2) + "%";
+
+
+                rank =
+                    result.rank || "--";
+
+
+                if (
+                    Number(result.percentage || 0)
+                    >= 40
+                ) {
+
+                    status = "PASS";
+
+                    statusClass = "pass";
+
+                } else {
+
+                    status = "FAIL";
+
+                    statusClass = "fail";
+
+                }
+
+            }
+
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${student.name || "--"}
+                </td>
+
+                <td>
+                    ${student.rollNo || "--"}
+                </td>
+
+                <td>
+                    ${student.email || "--"}
+                </td>
+
+                <td>
+                    ${student.course || "--"}
+                </td>
+
+                <td>
+                    ${student.branch || "--"}
+                </td>
+
+                <td>
+                    ${student.quizSet || "--"}
+                </td>
+
+                <td>
+                    ${score}
+                </td>
+
+                <td>
+                    ${percentage}
+                </td>
+
+                <td class="rank">
+                    ${rank}
+                </td>
+
+                <td class="${statusClass}">
+                    ${status}
+                </td>
+
+                <td>
+
+                    <button
+                        class="view-btn"
+                        onclick="viewStudent(${index})">
+
+                        VIEW
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(row);
+
+        });
+
+    }
+
+
+    /* =========================
+       FIND RESULT
+    ========================== */
+
+    function findStudentResult(student) {
+
+        const results =
+            JSON.parse(
+                localStorage.getItem("allResults") || "[]"
+            );
+
+
+        /*
+            Match by email or roll number.
+        */
+
+        return results.find(function(result) {
+
+            return (
+                result.email === student.email
+                ||
+                result.rollNo === student.rollNo
+            );
+
+        }) || null;
+
+    }
+
+
+    /* =========================
+       SEARCH STUDENTS
+    ========================== */
+
+    function searchStudents() {
+
+        const search =
+            document.getElementById(
+                "searchInput"
+            ).value
+            .toLowerCase()
+            .trim();
+
+
+        if (!search) {
+
+            displayStudents(students);
+
+            return;
+
+        }
+
+
+        const filtered =
+            students.filter(function(student) {
+
+                return (
+
+                    (student.name || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (student.rollNo || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (student.email || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                );
+
+            });
+
+
+        displayStudents(filtered);
+
+    }
+
+
+    /* =========================
+       VIEW STUDENT
+    ========================== */
+
+    function viewStudent(index) {
+
+        const student =
+            students[index];
+
+
+        if (!student) {
+            return;
+        }
+
+
+        document.getElementById(
+            "detailName"
+        ).textContent =
+            student.name || "--";
+
+
+        document.getElementById(
+            "detailRoll"
+        ).textContent =
+            student.rollNo || "--";
+
+
+        document.getElementById(
+            "detailEmail"
+        ).textContent =
+            student.email || "--";
+
+
+        document.getElementById(
+            "detailBranch"
+        ).textContent =
+            student.branch || "--";
+
+
+        document.getElementById(
+            "detailCourse"
+        ).textContent =
+            student.course || "--";
+
+
+        document.getElementById(
+            "detailSubject"
+        ).textContent =
+            student.subject || "--";
+
+
+        document.getElementById(
+            "detailSection"
+        ).textContent =
+            student.section || "--";
+
+
+        document.getElementById(
+            "detailQuiz"
+        ).textContent =
+            student.quizSet || "--";
+
+
+        document.getElementById(
+            "detailDate"
+        ).textContent =
+            student.registeredAt
+            ? new Date(
+                student.registeredAt
+            ).toLocaleString("en-IN")
+            : "--";
+
+
+        document.getElementById(
+            "studentModal"
+        ).style.display =
+            "flex";
+
+    }
+
+
+    /* =========================
+       CLOSE MODAL
+    ========================== */
+
+    function closeModal() {
+
+        document.getElementById(
+            "studentModal"
+        ).style.display =
+            "none";
+
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================== */
+
+    function logout() {
+
+        localStorage.removeItem(
+            "adminLoggedIn"
+        );
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+
+    /* =========================
+       INITIALIZE
+    ========================== */
+
+    loadStudents();
+
+
+    /* =========================
+       CLOSE MODAL OUTSIDE
+    ========================== */
+
+    window.onclick =
+        function(event) {
+
+            const modal =
+                document.getElementById(
+                    "studentModal"
+                );
+
+
+            if (event.target === modal) {
+
+                closeModal();
+
+            }
+
+        };
+
+</script>
+
+</body>
+</html>
